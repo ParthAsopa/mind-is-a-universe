@@ -1,0 +1,79 @@
+---
+// src/pages/tags/index.astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TagList from '../../components/TagList.astro';
+import { getPublishedPosts, getTagCounts } from '../../utils/posts';
+
+const posts = await getPublishedPosts();
+const tagCounts = getTagCounts(posts);
+const tags = Object.keys(tagCounts).sort((a, b) => a.localeCompare(b));
+---
+
+<BaseLayout
+  title="Tags"
+  description="Explore all article tags and topics covered on this blog."
+>
+  <div class="tags-page">
+    <div class="back-nav">
+      <a href="/" class="back-link">&larr; Back to all posts</a>
+    </div>
+
+    <header class="page-header">
+      <h1 class="page-title">Tags</h1>
+      <p class="page-description">
+        Browse articles grouped by subject. There are currently {tags.length} active {tags.length === 1 ? 'tag' : 'tags'}.
+      </p>
+    </header>
+
+    {tags.length === 0 ? (
+      <p class="no-tags">No tags available yet.</p>
+    ) : (
+      <div class="tag-cloud-wrapper">
+        <TagList tags={tags} counts={tagCounts} />
+      </div>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  .back-nav {
+    margin-bottom: var(--space-6);
+  }
+
+  .back-link {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-family: var(--font-mono);
+  }
+
+  .back-link:hover {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+
+  .page-header {
+    margin-bottom: var(--space-8);
+  }
+
+  .page-title {
+    margin-bottom: var(--space-2);
+  }
+
+  .page-description {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-base);
+  }
+
+  .tag-cloud-wrapper {
+    padding: var(--space-6);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .no-tags {
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+</style>

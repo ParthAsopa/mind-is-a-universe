@@ -1,0 +1,77 @@
+---
+// src/pages/about.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="About"
+  description="About Mind is a Universe, author background, and site colophon."
+>
+  <article class="about-page">
+    <header class="about-header">
+      <h1 class="page-title">About</h1>
+      <p class="page-lead">
+        A personal notebook for thoughts on software, design, and simplicity.
+      </p>
+    </header>
+
+    <div class="prose">
+      <p>
+        Hi there! I am a builder and tinkerer who enjoys clean code, thoughtful design,
+        and making things that last. This site is my personal space to document what I learn,
+        reflect on craft, and share occasional technical deep dives.
+      </p>
+
+      <h2>The Colophon</h2>
+      <p>
+        This website is built with an intentional emphasis on simplicity and performance:
+      </p>
+      <ul>
+        <li><strong>Framework:</strong> Built statically with <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a>.</li>
+        <li><strong>Styling:</strong> Pure native CSS custom properties defined in <code>tokens.css</code>. No CSS framework or preprocessor.</li>
+        <li><strong>JavaScript:</strong> Zero client-side JavaScript shipped to readers, with the sole exception of the theme toggle script.</li>
+        <li><strong>Typography:</strong> Native system font stacks tuned for high legibility across macOS, Windows, Linux, iOS, and Android.</li>
+        <li><strong>Reading width:</strong> Text content is constrained to ~65 characters per line to guarantee comfortable reading rhythm.</li>
+      </ul>
+
+      <h2>Guiding Principles</h2>
+      <blockquote>
+        "Perfection is achieved, not when there is nothing more to add, but when there is nothing left to take away."
+        <br />— Antoine de Saint-Exupéry
+      </blockquote>
+
+      <p>
+        I believe the web should be fast, quiet, and respectful of the reader's attention.
+        There are no tracking scripts, popups, or algorithmic feeds here. Just words, code,
+        and ideas.
+      </p>
+
+      <h2>Stay Connected</h2>
+      <p>
+        The best way to follow new posts is by subscribing to the <a href="/rss.xml">RSS feed</a> using your favorite feed reader (like NetNewsWire, Feedly, or Inoreader).
+      </p>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .about-page {
+    width: 100%;
+  }
+
+  .about-header {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--space-6);
+    margin-bottom: var(--space-8);
+  }
+
+  .page-title {
+    margin-bottom: var(--space-2);
+  }
+
+  .page-lead {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-base);
+    margin-bottom: 0;
+  }
+</style>

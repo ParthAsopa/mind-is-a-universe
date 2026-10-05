@@ -1,0 +1,95 @@
+---
+// src/components/PostCard.astro
+import type { CollectionEntry } from 'astro:content';
+import { formatDate } from '../utils/formatDate';
+import { getReadingTime } from '../utils/readingTime';
+import TagList from './TagList.astro';
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+}
+
+const { post } = Astro.props;
+const readingTime = getReadingTime(post.body);
+---
+
+<article class="post-card">
+  <div class="post-meta">
+    <time datetime={post.data.date.toISOString()}>
+      {formatDate(post.data.date)}
+    </time>
+    <span class="meta-dot" aria-hidden="true">•</span>
+    <span class="reading-time">{readingTime}</span>
+  </div>
+
+  <h2 class="post-title">
+    <a href={`/posts/${post.id}/`}>{post.data.title}</a>
+  </h2>
+
+  <p class="post-description">{post.data.description}</p>
+
+  {post.data.tags && post.data.tags.length > 0 && (
+    <div class="post-tags">
+      <TagList tags={post.data.tags} />
+    </div>
+  )}
+</article>
+
+<style>
+  .post-card {
+    padding: var(--space-6) 0;
+    border-bottom: 1px solid var(--color-border);
+    transition: transform var(--transition-timing);
+  }
+
+  .post-card:first-of-type {
+    padding-top: var(--space-2);
+  }
+
+  .post-card:last-of-type {
+    border-bottom: none;
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-xs);
+    font-family: var(--font-mono);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-2);
+  }
+
+  .meta-dot {
+    opacity: 0.6;
+  }
+
+  .post-title {
+    margin-top: 0;
+    margin-bottom: var(--space-2);
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-snug);
+  }
+
+  .post-title a {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  .post-title a:hover {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .post-description {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base);
+    margin-bottom: var(--space-3);
+  }
+
+  .post-tags {
+    margin-top: var(--space-2);
+  }
+</style>

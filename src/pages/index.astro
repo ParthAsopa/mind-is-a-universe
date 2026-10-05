@@ -1,0 +1,121 @@
+---
+// src/pages/index.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import TagList from '../components/TagList.astro';
+import { getPublishedPosts, getTagCounts } from '../utils/posts';
+
+const posts = await getPublishedPosts();
+const tagCounts = getTagCounts(posts);
+const allTags = Object.keys(tagCounts).sort((a, b) => tagCounts[b] - tagCounts[a]);
+---
+
+<BaseLayout
+  title="Home"
+  description="A clean, minimal, for-fun personal site exploring web development, design, and ideas."
+>
+  <section class="intro-section">
+    <h1 class="intro-title">Hello, world.</h1>
+    <p class="intro-lead">
+      Welcome to my personal corner of the web. I write about software, minimalist
+      tools, design systems, and whatever else catches my curiosity.
+    </p>
+  </section>
+
+  {allTags.length > 0 && (
+    <section class="tags-preview-section">
+      <div class="section-label">Browse by topic:</div>
+      <TagList tags={allTags} counts={tagCounts} />
+    </section>
+  )}
+
+  <section class="posts-section">
+    <div class="posts-header">
+      <h2 class="section-heading">Latest Posts</h2>
+      <span class="posts-count">{posts.length} {posts.length === 1 ? 'post' : 'posts'}</span>
+    </div>
+
+    {posts.length === 0 ? (
+      <p class="no-posts">No published posts yet. Check back soon!</p>
+    ) : (
+      <div class="posts-list">
+        {posts.map((post) => (
+          <PostCard post={post} />
+        ))}
+      </div>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .intro-section {
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: var(--space-6);
+  }
+
+  .intro-title {
+    margin-bottom: var(--space-2);
+  }
+
+  .intro-lead {
+    font-size: var(--font-size-base);
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-base);
+    margin-bottom: 0;
+  }
+
+  .tags-preview-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-8);
+    padding: var(--space-3) var(--space-4);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .section-label {
+    font-size: var(--font-size-xs);
+    font-family: var(--font-mono);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .posts-section {
+    margin-top: var(--space-6);
+  }
+
+  .posts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--space-2);
+  }
+
+  .section-heading {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: var(--font-size-xl);
+  }
+
+  .posts-count {
+    font-size: var(--font-size-xs);
+    font-family: var(--font-mono);
+    color: var(--color-text-muted);
+  }
+
+  .posts-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .no-posts {
+    color: var(--color-text-muted);
+    font-style: italic;
+    padding: var(--space-4) 0;
+  }
+</style>

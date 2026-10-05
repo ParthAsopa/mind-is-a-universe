@@ -1,0 +1,121 @@
+---
+// src/pages/tags/[tag].astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getPublishedPosts, type Post } from '../../utils/posts';
+import { slugify } from '../../utils/slugify';
+
+export async function getStaticPaths() {
+  const allPosts = await getPublishedPosts();
+
+  const tagMap = new Map<string, { originalTag: string; posts: Post[] }>();
+
+  for (const post of allPosts) {
+    for (const tag of post.data.tags) {
+      const slug = slugify(tag);
+      if (!tagMap.has(slug)) {
+        tagMap.set(slug, { originalTag: tag, posts: [] });
+      }
+      tagMap.get(slug)!.posts.push(post);
+    }
+  }
+
+  return Array.from(tagMap.entries()).map(([slug, { originalTag, posts }]) => ({
+    params: { tag: slug },
+    props: { posts, tag: originalTag, slug },
+  }));
+}
+
+interface Props {
+  posts: Post[];
+  tag: string;
+  slug: string;
+}
+
+const { posts, tag } = Astro.props;
+---
+
+<BaseLayout
+  title={`#${tag}`}
+  description={`All articles tagged with #${tag}.`}
+>
+  <div class="tag-page">
+    <div class="back-nav">
+      <a href="/tags/" class="back-link">&larr; All tags</a>
+      <span class="nav-separator">&bull;</span>
+      <a href="/" class="back-link">Home</a>
+    </div>
+
+    <header class="tag-header">
+      <div class="tag-label">Filtered by tag</div>
+      <h1 class="tag-title">#{tag}</h1>
+      <p class="tag-meta">
+        Showing {posts.length} {posts.length === 1 ? 'post' : 'posts'} tagged with #{tag}.
+      </p>
+    </header>
+
+    <div class="posts-list">
+      {posts.map((post) => (
+        <PostCard post={post} />
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .back-nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
+  }
+
+  .back-link {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-family: var(--font-mono);
+  }
+
+  .back-link:hover {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+
+  .nav-separator {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+  }
+
+  .tag-header {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--space-6);
+    margin-bottom: var(--space-6);
+  }
+
+  .tag-label {
+    font-size: var(--font-size-xs);
+    font-family: var(--font-mono);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--space-1);
+  }
+
+  .tag-title {
+    color: var(--color-primary);
+    margin-bottom: var(--space-2);
+    font-family: var(--font-mono);
+  }
+
+  .tag-meta {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-base);
+    margin-bottom: 0;
+  }
+
+  .posts-list {
+    display: flex;
+    flex-direction: column;
+  }
+</style>

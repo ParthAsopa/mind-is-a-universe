@@ -1,0 +1,100 @@
+---
+// src/pages/404.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Page Not Found"
+  description="The page you were looking for could not be found."
+>
+  <div class="not-found-container">
+    <div class="code-badge">404</div>
+    <h1 class="not-found-title">Page not found</h1>
+    <p class="not-found-message">
+      Sorry, the page you are looking for does not exist, has been moved, or is temporarily unavailable.
+    </p>
+
+    <div class="not-found-actions">
+      <a href="/" class="primary-btn">&larr; Return to Homepage</a>
+      <a href="/tags/" class="secondary-btn">Browse all tags</a>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .not-found-container {
+    padding: var(--space-12) 0;
+    text-align: center;
+    max-width: 48ch;
+    margin: 0 auto;
+  }
+
+  .code-badge {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-accent);
+    margin-bottom: var(--space-4);
+    letter-spacing: -0.05em;
+  }
+
+  .not-found-title {
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--space-3);
+  }
+
+  .not-found-message {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base);
+    margin-bottom: var(--space-8);
+  }
+
+  .not-found-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  .primary-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-2) var(--space-4);
+    background-color: var(--color-primary);
+    color: var(--color-bg);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    text-decoration: none;
+    transition: opacity var(--transition-timing);
+  }
+
+  .primary-btn:hover {
+    opacity: 0.9;
+    color: var(--color-bg);
+    text-decoration: none;
+  }
+
+  .secondary-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-2) var(--space-4);
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    text-decoration: none;
+    transition: background-color var(--transition-timing), border-color var(--transition-timing);
+  }
+
+  .secondary-btn:hover {
+    background-color: var(--color-surface-hover);
+    border-color: var(--color-border-hover);
+    text-decoration: none;
+  }
+</style>

@@ -1,0 +1,161 @@
+/**
+ * Design Tokens
+ * All colors, fonts, spacing, and layout dimensions are defined here.
+ * Re-theme the entire website simply by editing this file.
+ */
+
+:root {
+  /* Typography */
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Source Code Pro",
+    Menlo, Monaco, Consolas, monospace;
+
+  --font-size-xs: 0.75rem;     /* 12px */
+  --font-size-sm: 0.875rem;    /* 14px */
+  --font-size-base: 1.0625rem; /* 17px - ideal for reading */
+  --font-size-md: 1.25rem;     /* 20px */
+  --font-size-lg: 1.5rem;      /* 24px */
+  --font-size-xl: 1.875rem;    /* 30px */
+  --font-size-2xl: 2.25rem;    /* 36px */
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.4;
+  --line-height-base: 1.7;
+  --line-height-loose: 1.85;
+
+  /* Spacing Scale */
+  --space-1: 0.25rem;  /* 4px */
+  --space-2: 0.5rem;   /* 8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1rem;     /* 16px */
+  --space-5: 1.25rem;  /* 20px */
+  --space-6: 1.5rem;   /* 24px */
+  --space-8: 2rem;     /* 32px */
+  --space-10: 2.5rem;  /* 40px */
+  --space-12: 3rem;    /* 48px */
+  --space-16: 4rem;    /* 64px */
+  --space-20: 5rem;    /* 80px */
+
+  /* Layout */
+  --content-max-width: 65ch;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+  --transition-timing: 0.2s ease-in-out;
+
+  /* Light Theme Colors (Default) */
+  --color-bg: #fafaf9;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f5f5f4;
+  --color-surface-alt: #f0eee9;
+  --color-text: #1c1917;
+  --color-text-secondary: #57534e;
+  --color-text-muted: #78716c;
+  --color-border: #e7e5e4;
+  --color-border-subtle: #f0eee9;
+  --color-border-hover: #a8a29e;
+  --color-primary: #1c1917;
+  --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+  --color-accent-subtle: #eff6ff;
+  --color-tag-bg: #f5f5f4;
+  --color-tag-text: #44403c;
+  --color-tag-border: #e7e5e4;
+  --color-tag-hover-bg: #ebe9e6;
+  --color-code-bg: #f4f4f5;
+  --color-code-text: #18181b;
+  --color-code-border: #e4e4e7;
+  --color-blockquote-border: #d6d3d1;
+  --color-hr: #e7e5e4;
+}
+
+/* System dark mode preference */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --color-bg: #111215;
+    --color-surface: #181a20;
+    --color-surface-hover: #21242d;
+    --color-surface-alt: #1f222b;
+    --color-text: #f3f4f6;
+    --color-text-secondary: #9ca3af;
+    --color-text-muted: #6b7280;
+    --color-border: #2b2f3a;
+    --color-border-subtle: #1e212b;
+    --color-border-hover: #4b5563;
+    --color-primary: #f9fafb;
+    --color-accent: #60a5fa;
+    --color-accent-hover: #93c5fd;
+    --color-accent-subtle: #172554;
+    --color-tag-bg: #1c1f28;
+    --color-tag-text: #d1d5db;
+    --color-tag-border: #2b2f3a;
+    --color-tag-hover-bg: #262a37;
+    --color-code-bg: #16181f;
+    --color-code-text: #f3f4f6;
+    --color-code-border: #282c37;
+    --color-blockquote-border: #4b5563;
+    --color-hr: #2b2f3a;
+  }
+}
+
+/* Explicit dark theme via manual toggle */
+:root[data-theme='dark'],
+:root.dark {
+  --color-bg: #111215;
+  --color-surface: #181a20;
+  --color-surface-hover: #21242d;
+  --color-surface-alt: #1f222b;
+  --color-text: #f3f4f6;
+  --color-text-secondary: #9ca3af;
+  --color-text-muted: #6b7280;
+  --color-border: #2b2f3a;
+  --color-border-subtle: #1e212b;
+  --color-border-hover: #4b5563;
+  --color-primary: #f9fafb;
+  --color-accent: #60a5fa;
+  --color-accent-hover: #93c5fd;
+  --color-accent-subtle: #172554;
+  --color-tag-bg: #1c1f28;
+  --color-tag-text: #d1d5db;
+  --color-tag-border: #2b2f3a;
+  --color-tag-hover-bg: #262a37;
+  --color-code-bg: #16181f;
+  --color-code-text: #f3f4f6;
+  --color-code-border: #282c37;
+  --color-blockquote-border: #4b5563;
+  --color-hr: #2b2f3a;
+}
+
+/* Explicit light theme via manual toggle */
+:root[data-theme='light'] {
+  --color-bg: #fafaf9;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f5f5f4;
+  --color-surface-alt: #f0eee9;
+  --color-text: #1c1917;
+  --color-text-secondary: #57534e;
+  --color-text-muted: #78716c;
+  --color-border: #e7e5e4;
+  --color-border-subtle: #f0eee9;
+  --color-border-hover: #a8a29e;
+  --color-primary: #1c1917;
+  --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+  --color-accent-subtle: #eff6ff;
+  --color-tag-bg: #f5f5f4;
+  --color-tag-text: #44403c;
+  --color-tag-border: #e7e5e4;
+  --color-tag-hover-bg: #ebe9e6;
+  --color-code-bg: #f4f4f5;
+  --color-code-text: #18181b;
+  --color-code-border: #e4e4e7;
+  --color-blockquote-border: #d6d3d1;
+  --color-hr: #e7e5e4;
+}

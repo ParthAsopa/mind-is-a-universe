@@ -1,0 +1,148 @@
+---
+// src/pages/posts/[...slug].astro
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TagList from '../../components/TagList.astro';
+import { formatDate } from '../../utils/formatDate';
+import { getReadingTime } from '../../utils/readingTime';
+import { getPublishedPosts } from '../../utils/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const readingTime = getReadingTime(post.body);
+---
+
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+>
+  <article class="post-article">
+    <div class="back-nav">
+      <a href="/" class="back-link">&larr; Back to all posts</a>
+    </div>
+
+    <header class="post-header">
+      <div class="post-meta">
+        <time datetime={post.data.date.toISOString()}>
+          {formatDate(post.data.date)}
+        </time>
+        <span class="meta-dot" aria-hidden="true">&bull;</span>
+        <span class="reading-time">{readingTime}</span>
+        {post.data.draft && <span class="draft-badge">Draft</span>}
+      </div>
+
+      <h1 class="post-title">{post.data.title}</h1>
+
+      {post.data.tags && post.data.tags.length > 0 && (
+        <div class="post-tags-container">
+          <TagList tags={post.data.tags} />
+        </div>
+      )}
+    </header>
+
+    <hr class="post-divider" />
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    <footer class="post-footer">
+      <hr class="post-divider" />
+      <div class="footer-navigation">
+        <a href="/" class="back-link">&larr; Back to all posts</a>
+        <a href="/tags/" class="tags-link">Browse all tags &rarr;</a>
+      </div>
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  .post-article {
+    width: 100%;
+  }
+
+  .back-nav {
+    margin-bottom: var(--space-6);
+  }
+
+  .back-link,
+  .tags-link {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-family: var(--font-mono);
+  }
+
+  .back-link:hover,
+  .tags-link:hover {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+
+  .post-header {
+    margin-bottom: var(--space-6);
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    font-family: var(--font-mono);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-3);
+  }
+
+  .meta-dot {
+    opacity: 0.6;
+  }
+
+  .draft-badge {
+    background-color: #fef08a;
+    color: #854d0e;
+    font-size: var(--font-size-xs);
+    padding: 0.1rem 0.4rem;
+    border-radius: var(--radius-sm);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .post-title {
+    font-size: var(--font-size-2xl);
+    line-height: var(--line-height-tight);
+    letter-spacing: -0.025em;
+    margin-bottom: var(--space-4);
+  }
+
+  .post-tags-container {
+    margin-top: var(--space-3);
+  }
+
+  .post-divider {
+    border: 0;
+    height: 1px;
+    background-color: var(--color-border);
+    margin: var(--space-6) 0 var(--space-8) 0;
+  }
+
+  .post-footer {
+    margin-top: var(--space-12);
+  }
+
+  .footer-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    padding-top: var(--space-2);
+  }
+</style>
