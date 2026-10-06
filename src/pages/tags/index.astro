@@ -1,79 +1,58 @@
 ---
-// src/pages/tags/index.astro
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import TagList from '../../components/TagList.astro';
+import ArchiveLabel from '../../components/ArchiveLabel.astro';
+import PaperTape from '../../components/PaperTape.astro';
+import PostCard from '../../components/PostCard.astro';
+import StudioSection from '../../components/StudioSection.astro';
 import { getPublishedPosts, getTagCounts } from '../../utils/posts';
+import { slugify } from '../../utils/slugify';
 
 const posts = await getPublishedPosts();
 const tagCounts = getTagCounts(posts);
 const tags = Object.keys(tagCounts).sort((a, b) => a.localeCompare(b));
+const tagNotes = ['Hydration, islands, static chroma', 'Washi tape, rag paper, typography', 'Solitude, epistemic humbleness', 'Transit sketches, flora observations'];
 ---
 
-<BaseLayout
-  title="Tags"
-  description="Explore all article tags and topics covered on this blog."
->
-  <div class="tags-page">
-    <div class="back-nav">
-      <a href="/" class="back-link">&larr; Back to all posts</a>
-    </div>
-
-    <header class="page-header">
-      <h1 class="page-title">Tags</h1>
-      <p class="page-description">
-        Browse articles grouped by subject. There are currently {tags.length} active {tags.length === 1 ? 'tag' : 'tags'}.
-      </p>
+<BaseLayout title="Topics & Scraps" description="Browse the studio archive by topic.">
+  <div class="archive-board">
+    <header class="archive-intro">
+      <div><ArchiveLabel>Archive No. 402 / Dept. of Thought</ArchiveLabel><span class="sync-label">● Board synced: Astro · Studio desk</span><h1>Scrapbook, Specimen Drawer &amp; Topical Board</h1><p>Hand-assembled physical-digital ephemera, marginalia fragments, research notes, and long-form essays pinned across the studio drafting table.</p></div>
+      <a class="archive-action" href="/rss.xml">⊕ Pin fresh scrap</a>
     </header>
 
-    {tags.length === 0 ? (
-      <p class="no-tags">No tags available yet.</p>
-    ) : (
-      <div class="tag-cloud-wrapper">
-        <TagList tags={tags} counts={tagCounts} />
-      </div>
-    )}
+    <div class="filter-strip"><span>⌑ By topic tag:</span>{tags.map((tag, index) => <a class:list={{ active: index === 0 }} href={`#${tag}`}>#{tag} <small>{tagCounts[tag]}</small></a>)}</div>
+    <StudioSection eyebrow="▱ Tab selectors · Shelf 01" title="Topic cabinets & folders" detail={`${tags.length} ACTIVE SHELVES`} />
+    <div class="folder-grid">
+      {tags.slice(0, 4).map((tag, index) => <a class="folder" id={tag} href={`/tags/${slugify(tag)}/`}><span class="folder-code">{tag.toUpperCase()} · 0{index + 1}</span><h2>{tag[0].toUpperCase() + tag.slice(1)} &amp; {index % 2 ? 'Aesthetics' : 'Astro'}</h2><p>{tagNotes[index % tagNotes.length]}</p><b>{tagCounts[tag]} artifacts　→</b></a>)}
+    </div>
+
+    <StudioSection eyebrow="● The scrap bin · vision board" title="Pinned & taped specimens" detail="{posts.length} COLLECTED ITEMS" />
+    <div class="archive-posts">{posts.map((post, index) => <PostCard post={post} index={index} featured={index === 0} />)}</div>
   </div>
 </BaseLayout>
 
 <style>
-  .back-nav {
-    margin-bottom: var(--space-6);
-  }
-
-  .back-link {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-secondary);
-    text-decoration: none;
-    font-family: var(--font-mono);
-  }
-
-  .back-link:hover {
-    color: var(--color-accent);
-    text-decoration: underline;
-  }
-
-  .page-header {
-    margin-bottom: var(--space-8);
-  }
-
-  .page-title {
-    margin-bottom: var(--space-2);
-  }
-
-  .page-description {
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-base);
-  }
-
-  .tag-cloud-wrapper {
-    padding: var(--space-6);
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-  }
-
-  .no-tags {
-    color: var(--color-text-muted);
-    font-style: italic;
-  }
+  .archive-board { max-width: 1180px; margin: 0 auto; }
+  .archive-intro { display: flex; justify-content: space-between; align-items: end; gap: var(--space-6); }
+  .archive-intro h1 { max-width: 48rem; margin: var(--space-4) 0 var(--space-2); font-size: clamp(2.2rem, 5vw, 3.7rem); }
+  .archive-intro p { max-width: 42rem; color: var(--color-ink-secondary); font-size: 1.15rem; }
+  .sync-label { margin-left: var(--space-3); color: var(--color-accent-sage); font: 0.6rem var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+  .archive-action { padding: 0.7rem 1rem; color: #fff; background: var(--color-accent-terracotta); font: 0.65rem var(--font-mono); text-decoration: none; text-transform: uppercase; white-space: nowrap; }
+  .filter-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; margin-top: var(--space-6); padding: var(--space-4); background: var(--color-surface-low); box-shadow: var(--shadow-paper); color: var(--color-ink-secondary); font: 0.65rem var(--font-mono); text-transform: uppercase; }
+  .filter-strip a { padding: 0.35rem 0.55rem; color: var(--color-ink-secondary); background: var(--color-surface-container-high); text-decoration: none; }
+  .filter-strip a.active { color: #fff; background: var(--color-accent-terracotta); }
+  .filter-strip small { color: var(--color-ink-muted); }
+  .filter-strip a.active small { color: #fff; }
+  .folder-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); }
+  .folder { position: relative; min-height: 190px; padding: var(--space-5); color: var(--color-ink-primary); background: var(--color-surface-container); box-shadow: var(--shadow-paper); text-decoration: none; transition: transform var(--transition-timing); }
+  .folder:nth-child(2) { transform: translateY(-0.7rem) rotate(1deg); } .folder:nth-child(3) { transform: rotate(-0.8deg); } .folder:nth-child(4) { transform: translateY(0.4rem) rotate(0.7deg); }
+  .folder:hover { z-index: 2; transform: translateY(-4px) rotate(0); }
+  .folder-code { font: 0.6rem var(--font-mono); letter-spacing: 0.08em; }
+  .folder h2 { margin: var(--space-5) 0 var(--space-2); color: var(--color-accent-terracotta); font-size: 1.4rem; }
+  .folder p { color: var(--color-ink-secondary); font: 0.8rem/1.5 var(--font-mono); }
+  .folder b { position: absolute; bottom: var(--space-5); color: var(--color-accent-sage); font: 0.65rem var(--font-mono); }
+  .archive-posts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); align-items: start; }
+  .archive-posts :global(.post-card:first-child) { grid-column: span 2; }
+  @media (max-width: 800px) { .archive-intro { align-items: start; flex-direction: column; } .folder-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .sync-label { display: block; margin: var(--space-2) 0; } .folder-grid, .archive-posts { grid-template-columns: 1fr; } .archive-posts :global(.post-card:first-child) { grid-column: auto; } }
 </style>

@@ -1,121 +1,121 @@
 ---
-// src/pages/index.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ArchiveLabel from '../components/ArchiveLabel.astro';
+import PaperTape from '../components/PaperTape.astro';
 import PostCard from '../components/PostCard.astro';
-import TagList from '../components/TagList.astro';
-import { getPublishedPosts, getTagCounts } from '../utils/posts';
+import StudioSection from '../components/StudioSection.astro';
+import { getPublishedNotes, getPublishedPosts, getTagCounts } from '../utils/posts';
+import { slugify } from '../utils/slugify';
 
 const posts = await getPublishedPosts();
+const notes = await getPublishedNotes();
+const latestNote = notes[0];
 const tagCounts = getTagCounts(posts);
-const allTags = Object.keys(tagCounts).sort((a, b) => tagCounts[b] - tagCounts[a]);
+const tags = Object.keys(tagCounts).sort((a, b) => tagCounts[b] - tagCounts[a]);
+const featuredPost = posts[0];
+const remainingPosts = posts.slice(1);
 ---
 
-<BaseLayout
-  title="Home"
-  description="A clean, minimal, for-fun personal site exploring web development, design, and ideas."
->
-  <section class="intro-section">
-    <h1 class="intro-title">Hello, world.</h1>
-    <p class="intro-lead">
-      Welcome to my personal corner of the web. I write about software, minimalist
-      tools, design systems, and whatever else catches my curiosity.
-    </p>
-  </section>
-
-  {allTags.length > 0 && (
-    <section class="tags-preview-section">
-      <div class="section-label">Browse by topic:</div>
-      <TagList tags={allTags} counts={tagCounts} />
+<BaseLayout title="Feed" description="A physical-digital studio for quiet thoughts, design experiments, and creative wanderings.">
+  <div class="home-board">
+    <section class="welcome-grid">
+      <article class="welcome-sheet">
+        <PaperTape class="welcome-tape" tone="terracotta" />
+        <div class="sheet-kicker">⚑ Studio desk memo · No. 042</div>
+        <div class="welcome-heading">
+          <div>
+            <h1>Mind is a Universe</h1>
+            <p>A garden of uncensored thoughts, tactile design experiments, code scraps, and creative wanderings. Pinned down before the ink dries.</p>
+          </div>
+          <span class="date-stamp">ARCHIVED<br /><strong>OCT 2026</strong><br />STUDIO IX</span>
+        </div>
+        <div class="sheet-footer"><span>⌁ Recorded in Field Journal #09</span><em>~ Julian V. (Curator)</em></div>
+      </article>
+      {latestNote && (
+        <a class="memo-note" href="/notes/" aria-label="Open all sticky memos">
+          <PaperTape class="memo-tape" tone="neutral" />
+          <span class="memo-kicker">Stick memo · {latestNote.data.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+          <h2>{latestNote.data.title}</h2>
+          <p>“{latestNote.data.text}”</p>
+          <small>⌑ Open memo drawer <b>SCRAP #{latestNote.id.slice(-2).toUpperCase()}</b></small>
+        </a>
+      )}
     </section>
-  )}
 
-  <section class="posts-section">
-    <div class="posts-header">
-      <h2 class="section-heading">Latest Posts</h2>
-      <span class="posts-count">{posts.length} {posts.length === 1 ? 'post' : 'posts'}</span>
-    </div>
-
-    {posts.length === 0 ? (
-      <p class="no-posts">No published posts yet. Check back soon!</p>
-    ) : (
-      <div class="posts-list">
-        {posts.map((post) => (
-          <PostCard post={post} />
-        ))}
+    <section class="board-layout">
+      <div class="feed-column">
+        {featuredPost && <PostCard post={featuredPost} featured index={0} />}
+        <div class="post-mosaic">
+          {remainingPosts.map((post, index) => <PostCard post={post} index={index + 1} />)}
+        </div>
       </div>
-    )}
-  </section>
+      <aside class="margin-column">
+        <div class="curator-card">
+          <span class="sheet-kicker">✎ Curator profile</span>
+          <h2>Julian Vance</h2>
+          <p>Thinking out loud in public. Living between the tactile weight of antique ephemera and the fluidity of open-source software.</p>
+          <span class="card-meta">LOCATION: OLYMPIA, WA<br />ONLINE · DRAFTING</span>
+        </div>
+        <div class="tag-card">
+          <span class="sheet-kicker">◇ Curated scraps</span>
+          <div class="tag-cloud">{tags.map((tag) => <a href={`/tags/${slugify(tag)}/`}>#{tag} <small>{tagCounts[tag]}</small></a>)}</div>
+          <p>Showing {tags.length} collected topics.</p>
+        </div>
+      </aside>
+    </section>
+
+    <StudioSection eyebrow="▣ Visual clippings & ephemera" title="Collected from the studio" detail="PLATE VII · SPRING 2026" />
+    <div class="ephemera-grid">
+      {['Lead foundry specimen', 'Spatial form #3', 'Sun printing study', 'Field log fragment'].map((label, index) => (
+        <figure class:list={['ephemera', `ephemera-${index + 1}`]}><div class="ephemera-art"></div><figcaption>0{index + 1}. {label}</figcaption></figure>
+      ))}
+    </div>
+  </div>
 </BaseLayout>
 
 <style>
-  .intro-section {
-    padding-bottom: var(--space-6);
-    border-bottom: 1px solid var(--color-border);
-    margin-bottom: var(--space-6);
-  }
-
-  .intro-title {
-    margin-bottom: var(--space-2);
-  }
-
-  .intro-lead {
-    font-size: var(--font-size-base);
-    color: var(--color-text-secondary);
-    line-height: var(--line-height-base);
-    margin-bottom: 0;
-  }
-
-  .tags-preview-section {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-3);
-    margin-bottom: var(--space-8);
-    padding: var(--space-3) var(--space-4);
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-  }
-
-  .section-label {
-    font-size: var(--font-size-xs);
-    font-family: var(--font-mono);
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .posts-section {
-    margin-top: var(--space-6);
-  }
-
-  .posts-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: var(--space-2);
-  }
-
-  .section-heading {
-    margin-top: 0;
-    margin-bottom: 0;
-    font-size: var(--font-size-xl);
-  }
-
-  .posts-count {
-    font-size: var(--font-size-xs);
-    font-family: var(--font-mono);
-    color: var(--color-text-muted);
-  }
-
-  .posts-list {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .no-posts {
-    color: var(--color-text-muted);
-    font-style: italic;
-    padding: var(--space-4) 0;
-  }
+  .home-board { max-width: 1180px; margin: 0 auto; }
+  .welcome-grid, .board-layout { display: grid; grid-template-columns: minmax(0, 2fr) minmax(240px, 1fr); gap: var(--space-5); align-items: start; }
+  .welcome-sheet, .memo-note, .curator-card, .tag-card { position: relative; box-shadow: var(--shadow-paper); }
+    .welcome-sheet, .memo-note, .curator-card, .tag-card { position: relative; isolation: isolate; box-shadow: var(--shadow-paper); }
+    .welcome-sheet > :not(.paper-tape), .memo-note > :not(.paper-tape) { position: relative; z-index: 1; }
+  .welcome-sheet { padding: var(--space-6); background: var(--color-surface-container-high); transform: rotate(-0.7deg); }
+  .welcome-tape { top: -0.5rem; left: 44%; }
+  .sheet-kicker, .card-meta { color: var(--color-ink-secondary); font: 0.6rem/1.4 var(--font-mono); letter-spacing: 0.09em; text-transform: uppercase; }
+  .welcome-heading { display: flex; justify-content: space-between; gap: var(--space-5); margin: var(--space-6) 0 var(--space-4); }
+  .welcome-heading h1 { margin: 0 0 var(--space-2); color: var(--color-accent-terracotta); font-size: clamp(2.1rem, 4vw, 3rem); }
+  .welcome-heading p { max-width: 38rem; margin: 0; font-size: 1.15rem; }
+  .date-stamp { flex: 0 0 auto; align-self: start; padding: var(--space-2); border: 1px solid var(--color-accent-terracotta); color: var(--color-accent-terracotta); font: 0.55rem/1.5 var(--font-mono); text-align: center; transform: rotate(-10deg); }
+  .date-stamp strong { font-size: 0.7rem; }
+  .sheet-footer { display: flex; justify-content: space-between; gap: var(--space-3); padding: var(--space-2); color: var(--color-ink-secondary); background: rgba(255,255,255,0.25); font: 0.65rem var(--font-mono); }
+  .sheet-footer em { color: var(--color-accent-terracotta); font-family: var(--font-serif); }
+  .memo-note { display: block; padding: var(--space-5); color: var(--color-ink-primary); background: #fff2bc; transform: rotate(1.5deg); text-decoration: none; }
+  .memo-note:hover { color: var(--color-ink-primary); transform: translateY(-3px) rotate(0.5deg); }
+  .memo-tape { top: -0.45rem; right: 2rem; }
+  .memo-kicker { color: var(--color-ink-secondary); font: 0.6rem var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+  .memo-note h2 { margin: var(--space-5) 0 var(--space-2); font-size: 1.25rem; }
+  .memo-note p { margin: 0 0 var(--space-5); font-size: 1.25rem; line-height: 1.35; }
+  .memo-note small { display: flex; justify-content: space-between; color: var(--color-ink-secondary); font: 0.65rem var(--font-mono); }
+  .board-layout { margin-top: var(--space-8); grid-template-columns: minmax(0, 2fr) minmax(240px, 0.8fr); }
+  .feed-column { display: flex; flex-direction: column; gap: var(--space-6); }
+  .post-mosaic { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); align-items: start; }
+  .margin-column { display: grid; gap: var(--space-6); }
+  .curator-card { padding: var(--space-5); background: var(--color-surface-paper); transform: rotate(1deg); }
+  .curator-card h2 { margin: var(--space-4) 0 var(--space-2); color: var(--color-accent-terracotta); font-size: 1.5rem; }
+  .curator-card p { color: var(--color-ink-secondary); font-size: 0.95rem; }
+  .tag-card { padding: var(--space-5); background: var(--color-surface-container); transform: rotate(-0.7deg); }
+  .tag-cloud { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: var(--space-4) 0; }
+  .tag-cloud a { padding: 0.35rem; color: var(--color-ink-primary); background: var(--color-surface-paper); font: 0.65rem var(--font-mono); text-decoration: none; }
+  .tag-cloud small { color: var(--color-ink-muted); }
+  .tag-card p { margin: 0; color: var(--color-ink-muted); font: italic 0.75rem var(--font-serif); text-align: right; }
+  .ephemera-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); }
+  .ephemera { padding: var(--space-2); background: var(--color-surface-paper); box-shadow: var(--shadow-paper); }
+  .ephemera:nth-child(2) { transform: rotate(1deg); } .ephemera:nth-child(3) { transform: rotate(-0.8deg); } .ephemera:nth-child(4) { transform: rotate(1.2deg); }
+  .ephemera-art { aspect-ratio: 1 / 1.1; background: linear-gradient(135deg, #4b4b44, #bcb4a5 45%, #2b2621); filter: sepia(0.3); }
+  .ephemera-2 .ephemera-art { background: linear-gradient(135deg, #a4afb0, #69797b 45%, #e5e2dc); }
+  .ephemera-3 .ephemera-art { background: radial-gradient(circle at 55% 42%, #dbe6d1 0 20%, transparent 21%), linear-gradient(135deg, #31577a, #e5e2dc); }
+  .ephemera-4 .ephemera-art { background: linear-gradient(145deg, #c7b49a, #75624c 55%, #e8dfd1); }
+  .ephemera figcaption { padding: var(--space-2) 0 0; color: var(--color-ink-secondary); font: 0.6rem var(--font-mono); text-align: center; }
+  @media (max-width: 800px) { .welcome-grid, .board-layout { grid-template-columns: 1fr; } .margin-column { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ephemera-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .welcome-heading { flex-direction: column; } .date-stamp { align-self: end; } .sheet-footer { flex-direction: column; } .post-mosaic, .margin-column { grid-template-columns: 1fr; } }
 </style>

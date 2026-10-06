@@ -2,6 +2,7 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 export type Post = CollectionEntry<'posts'>;
+export type Note = CollectionEntry<'notes'>;
 
 /**
  * Returns all published posts (excluding drafts in production builds),
@@ -26,4 +27,13 @@ export function getTagCounts(posts: Post[]): Record<string, number> {
     }
   }
   return counts;
+}
+
+/** Returns short published notes, newest first. */
+export async function getPublishedNotes(): Promise<Note[]> {
+  const notes = await getCollection('notes', ({ data }) => {
+    return import.meta.env.PROD ? data.draft !== true : true;
+  });
+
+  return notes.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 }

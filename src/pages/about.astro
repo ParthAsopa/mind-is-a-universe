@@ -1,77 +1,55 @@
 ---
-// src/pages/about.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ArchiveLabel from '../components/ArchiveLabel.astro';
+import PaperTape from '../components/PaperTape.astro';
+import StudioSection from '../components/StudioSection.astro';
 ---
 
-<BaseLayout
-  title="About"
-  description="About Mind is a Universe, author background, and site colophon."
->
-  <article class="about-page">
-    <header class="about-header">
-      <h1 class="page-title">About</h1>
-      <p class="page-lead">
-        A personal notebook for thoughts on software, design, and simplicity.
-      </p>
+<BaseLayout title="Manifesto" description="The manifesto, tools, and working principles behind Mind is a Universe.">
+  <div class="manifesto-board">
+    <header class="manifesto-header">
+      <div><ArchiveLabel>Doc ref: 001-MANIF</ArchiveLabel><span class="header-note">Archival folio / Studio desk</span><h1>The Manifesto of<br />Uncluttered Thought</h1><p>“We shape our paper slips, and thereafter our slips shape our intellect.”</p></div>
+      <div class="status-card"><span>⌁ Current status</span><strong>Drafting in public</strong></div>
     </header>
 
-    <div class="prose">
-      <p>
-        Hi there! I am a builder and tinkerer who enjoys clean code, thoughtful design,
-        and making things that last. This site is my personal space to document what I learn,
-        reflect on craft, and share occasional technical deep dives.
-      </p>
-
-      <h2>The Colophon</h2>
-      <p>
-        This website is built with an intentional emphasis on simplicity and performance:
-      </p>
-      <ul>
-        <li><strong>Framework:</strong> Built statically with <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a>.</li>
-        <li><strong>Styling:</strong> Pure native CSS custom properties defined in <code>tokens.css</code>. No CSS framework or preprocessor.</li>
-        <li><strong>JavaScript:</strong> Zero client-side JavaScript shipped to readers, with the sole exception of the theme toggle script.</li>
-        <li><strong>Typography:</strong> Native system font stacks tuned for high legibility across macOS, Windows, Linux, iOS, and Android.</li>
-        <li><strong>Reading width:</strong> Text content is constrained to ~65 characters per line to guarantee comfortable reading rhythm.</li>
-      </ul>
-
-      <h2>Guiding Principles</h2>
-      <blockquote>
-        "Perfection is achieved, not when there is nothing more to add, but when there is nothing left to take away."
-        <br />— Antoine de Saint-Exupéry
-      </blockquote>
-
-      <p>
-        I believe the web should be fast, quiet, and respectful of the reader's attention.
-        There are no tracking scripts, popups, or algorithmic feeds here. Just words, code,
-        and ideas.
-      </p>
-
-      <h2>Stay Connected</h2>
-      <p>
-        The best way to follow new posts is by subscribing to the <a href="/rss.xml">RSS feed</a> using your favorite feed reader (like NetNewsWire, Feedly, or Inoreader).
-      </p>
+    <div class="principle-grid">
+      {[
+        ['01 / Hypertext', 'Zero runtime bloat', 'The modern web suffocates under multi-megabyte hydration trees. Here, every artifact ships as clean static HTML.', '0.00ms hydration'],
+        ['02 / Texture', 'Tactile digital spaces', 'Digital reading need not feel like staring down an aluminum corridor. We honor warmth, rag stock, and ink residue.', 'Rag stock 320g'],
+        ['03 / Typography', 'The 68ch measure', 'Sentences must not spill edge to edge. Readable optical measure lets the eye move without fatigue.', 'Optimal rhythm'],
+        ['04 / Open notebook', 'Thinking in public', 'Polish can be a form of cowardice. The scrapbook presents living hypotheses before dogma.', 'Living edits'],
+      ].map((principle, index) => <article class:list={['principle-card', `principle-${index + 1}`]}><PaperTape tone={index === 1 ? 'sage' : index === 2 ? 'blue' : 'neutral'} class="principle-tape" /><span class="principle-code">{principle[0]}</span><h2>{principle[1]}</h2><p>{principle[2]}</p><small>{principle[3]}　 FIG. {String.fromCharCode(65 + index)}</small></article>)}
     </div>
-  </article>
+
+    <div class="manifesto-lower">
+      <article class="bio-sheet"><span class="sheet-kicker">◉ Archive registry / personal letter</span><h2>About the mind behind the cosmos</h2><p>Hello. I am Julian Ross, an archivist, writer, and front-end builder who became exhausted by digital homogeneity. I design interfaces for vast networks, watched typefaces become bland geometric grotesques, and observed quiet blogs replaced by endless algorithmic feeds.</p><p><strong>Mind is a Universe</strong> is an intentional counter-space. Built from scratch on torn index cards: reflections, unfinished reference, field notes, and long-form essays pinned across an analog table.</p><blockquote>“Every entry must survive 48 hours in a physical pocket notebook before touching the keyboard.”</blockquote><em>Julian S. Ross</em></article>
+      <div class="studio-stills"><div class="still still-one"></div><div class="still still-two"></div></div>
+    </div>
+
+    <StudioSection eyebrow="▣ Colophon & system anatomy" title="The physical-digital toolchain" detail="SPEC VERSION 2.4.0" />
+    <div class="tool-grid">{['Astro v4', 'tokens.css', 'Shiki syntax', 'Cloudflare Pages', 'RSS 2.0'].map((tool, index) => <div><b>{String(index + 1).padStart(2, '0')}</b><h3>{tool}</h3><p>{['Islands architecture, rendering complete zero-JS static HTML by default.', 'Pure CSS custom properties. Zero runtime dependencies.', 'Build-time syntax highlighting with a clean, crisp edge.', 'Served globally from the edge with no analytics.', 'Full-content feeds respecting readers and quiet attention.'][index]}</p></div>)}</div>
+  </div>
 </BaseLayout>
 
 <style>
-  .about-page {
-    width: 100%;
-  }
-
-  .about-header {
-    border-bottom: 1px solid var(--color-border);
-    padding-bottom: var(--space-6);
-    margin-bottom: var(--space-8);
-  }
-
-  .page-title {
-    margin-bottom: var(--space-2);
-  }
-
-  .page-lead {
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-base);
-    margin-bottom: 0;
-  }
+  .manifesto-board { max-width: 1180px; margin: 0 auto; padding: var(--space-4) var(--space-5) var(--space-8); background: var(--color-surface-container); box-shadow: var(--shadow-paper); }
+  .manifesto-header { display: flex; justify-content: space-between; align-items: end; gap: var(--space-6); padding: var(--space-4) 0 var(--space-8); }
+  .header-note { margin-left: var(--space-3); color: var(--color-ink-secondary); font: 0.6rem var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+  .manifesto-header h1 { margin: var(--space-4) 0 var(--space-2); color: var(--color-accent-terracotta); font-size: clamp(2.5rem, 6vw, 4.3rem); }
+  .manifesto-header p { color: var(--color-ink-secondary); font-size: 1.15rem; font-style: italic; }
+  .status-card { display: grid; gap: var(--space-1); padding: var(--space-4); background: var(--color-surface-container-high); transform: rotate(1deg); }
+  .status-card span, .status-card strong { font-family: var(--font-mono); text-transform: uppercase; } .status-card span { color: var(--color-ink-muted); font-size: 0.6rem; } .status-card strong { color: var(--color-accent-terracotta); font-size: 0.7rem; }
+  .principle-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); }
+  .principle-card { position: relative; min-height: 250px; padding: var(--space-5); background: var(--color-surface-paper); box-shadow: var(--shadow-paper); }
+    .principle-card { position: relative; isolation: isolate; min-height: 250px; padding: var(--space-5); background: var(--color-surface-paper); box-shadow: var(--shadow-paper); }
+    .principle-card > :not(.paper-tape) { position: relative; z-index: 1; }
+  .principle-1 { transform: rotate(-1deg); } .principle-2 { transform: translateY(-0.6rem) rotate(1.2deg); } .principle-3 { transform: rotate(-0.6deg); } .principle-4 { transform: translateY(-0.3rem) rotate(0.8deg); }
+  .principle-card:hover { transform: translateY(-4px) rotate(0); }
+  .principle-tape { top: -0.55rem; left: 2rem; } .principle-code, .principle-card small { font: 0.6rem var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; } .principle-code { color: var(--color-accent-terracotta); } .principle-card h2 { margin: var(--space-5) 0 var(--space-2); font-size: 1.35rem; } .principle-card p { color: var(--color-ink-secondary); font-size: 0.9rem; } .principle-card small { position: absolute; right: var(--space-5); bottom: var(--space-5); color: var(--color-accent-sage); }
+  .manifesto-lower { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: var(--space-6); margin-top: var(--space-12); }
+  .bio-sheet { padding: var(--space-6); background: var(--color-surface-paper); box-shadow: var(--shadow-paper); } .sheet-kicker { color: var(--color-ink-secondary); font: 0.6rem var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; } .bio-sheet h2 { margin: var(--space-5) 0 var(--space-3); font-size: 2rem; } .bio-sheet p { color: var(--color-ink-secondary); } .bio-sheet blockquote { margin: var(--space-5) 0; padding: var(--space-4); color: var(--color-accent-terracotta); background: var(--color-surface-low); font-style: italic; }
+  .studio-stills { display: grid; gap: var(--space-4); } .still { min-height: 210px; background: linear-gradient(145deg, #d7c9b4, #695744 55%, #efe9df); box-shadow: var(--shadow-paper); } .still-one { transform: rotate(1deg); } .still-two { min-height: 160px; transform: rotate(-1deg); background: linear-gradient(135deg, #6e7169, #292921 55%, #c3b9a9); }
+  .tool-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-3); padding: var(--space-4); background: var(--color-surface-low); } .tool-grid > div { min-height: 150px; padding: var(--space-4); background: var(--color-surface-paper); } .tool-grid b { color: var(--color-accent-terracotta); font: 0.65rem var(--font-mono); } .tool-grid h3 { margin: var(--space-3) 0 var(--space-2); font-size: 1.1rem; } .tool-grid p { color: var(--color-ink-secondary); font-size: 0.8rem; }
+  @media (max-width: 850px) { .principle-grid { grid-template-columns: repeat(2, 1fr); } .manifesto-lower { grid-template-columns: 1fr; } .tool-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 560px) { .manifesto-board { padding: var(--space-3); } .manifesto-header { align-items: start; flex-direction: column; } .header-note { display: block; margin: var(--space-2) 0; } .principle-grid, .tool-grid { grid-template-columns: 1fr; } }
 </style>

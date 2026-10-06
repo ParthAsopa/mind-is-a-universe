@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NoteCard from '../../components/NoteCard.astro';
+import StudioSection from '../../components/StudioSection.astro';
+import { getPublishedNotes } from '../../utils/posts';
+
+const notes = await getPublishedNotes();
+---
+
+<BaseLayout title="Notes" description="Short notes and passing thoughts from the studio desk.">
+  <div class="notes-board">
+    <header class="notes-header">
+      <span class="notes-kicker">⌁ Studio desk / short-form archive</span>
+      <h1>Sticky Memos</h1>
+      <p>Small thoughts, field observations, and useful fragments. Nothing here is meant to become a full essay.</p>
+    </header>
+
+    <StudioSection eyebrow="▣ All notes · newest first" title="The memo drawer" detail={`${notes.length} PUBLISHED NOTES`} />
+    {notes.length > 0 ? (
+      <div class="notes-grid">
+        {notes.map((note, index) => <NoteCard note={note} featured={index === 0} />)}
+      </div>
+    ) : (
+      <p class="empty-notes">The memo drawer is empty. The first note is waiting to be pinned.</p>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  .notes-board { max-width: 1040px; margin: 0 auto; }
+  .notes-header { max-width: 680px; }
+  .notes-kicker { color: var(--color-accent-terracotta); font: 0.65rem var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+  .notes-header h1 { margin: var(--space-4) 0 var(--space-2); color: var(--color-accent-terracotta); font-size: clamp(2.5rem, 6vw, 4rem); }
+  .notes-header p { color: var(--color-ink-secondary); font-size: 1.15rem; }
+  .notes-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-6); align-items: start; }
+  .notes-grid :global(.note-card:nth-child(2n)) { transform: rotate(-1deg); background: #fff0a8; }
+  .notes-grid :global(.note-card:nth-child(3n)) { transform: rotate(0.6deg); background: #ffefb0; }
+  .notes-grid :global(.note-card:first-child) { grid-column: span 2; }
+  .notes-grid :global(.note-card:first-child p) { max-width: 46rem; font-size: 1.45rem; }
+  .empty-notes { padding: var(--space-6); background: var(--color-surface-container); color: var(--color-ink-secondary); }
+  @media (max-width: 760px) { .notes-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .notes-grid :global(.note-card:first-child) { grid-column: span 2; } }
+  @media (max-width: 520px) { .notes-grid { grid-template-columns: 1fr; } .notes-grid :global(.note-card:first-child) { grid-column: auto; } }
+</style>

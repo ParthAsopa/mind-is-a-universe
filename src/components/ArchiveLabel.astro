@@ -1,0 +1,28 @@
+---
+interface Props {
+  children: string;
+  tone?: 'terracotta' | 'sage' | 'blue' | 'neutral';
+}
+
+const { children, tone = 'terracotta' } = Astro.props;
+---
+
+<span class:list={['archive-label', `archive-label-${tone}`]}>{children}</span>
+
+<style>
+  .archive-label {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 0.2rem 0.45rem;
+    font: 700 0.625rem/1 var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 2px;
+  }
+
+  .archive-label-terracotta { color: #fff; background: var(--color-accent-terracotta); }
+  .archive-label-sage { color: #fff; background: var(--color-accent-sage); }
+  .archive-label-blue { color: #fff; background: var(--color-accent-cobalt); }
+  .archive-label-neutral { color: var(--color-ink-secondary); background: var(--color-surface-container-high); }
+</style>

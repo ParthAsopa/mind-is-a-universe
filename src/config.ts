@@ -7,6 +7,7 @@ export const siteUrl = 'https://mind-is-a-universe.pages.dev';
 
 export const navItems = [
   { label: 'Blog', href: '/' },
+  { label: 'Notes', href: '/notes/' },
   { label: 'Tags', href: '/tags/' },
   { label: 'About', href: '/about/' },
 ];

@@ -1,66 +1,27 @@
 ---
-// src/components/Header.astro
 import ThemeToggle from './ThemeToggle.astro';
 import { siteTitle, navItems } from '../config';
 
-interface Props {
-  currentPath?: string;
-}
-
+interface Props { currentPath?: string; }
 const { currentPath = Astro.url.pathname } = Astro.props;
 ---
 
 <header class="site-header">
   <div class="header-inner">
     <a href="/" class="site-title">
-      <span class="site-mark">&gt;_</span>
-      <span class="site-name">{siteTitle}</span>
+      <span class="site-mark" aria-hidden="true">✣</span>
+      <span>{siteTitle}</span>
     </a>
 
     <nav class="site-nav" aria-label="Main Navigation">
       <ul class="nav-list">
         {navItems.map((item) => {
-          const isActive =
-            item.href === '/'
-              ? currentPath === '/'
-              : currentPath.startsWith(item.href);
-          return (
-            <li>
-              <a
-                href={item.href}
-                class:list={['nav-link', { 'nav-link-active': isActive }]}
-                aria-current={isActive ? 'page' : undefined}
-              >
-                {item.label}
-              </a>
-            </li>
-          );
+          const isActive = item.href === '/' ? currentPath === '/' : currentPath.startsWith(item.href);
+          return <li><a href={item.href} class:list={{ 'nav-link-active': isActive }} aria-current={isActive ? 'page' : undefined}>{item.label}</a></li>;
         })}
       </ul>
-
       <div class="nav-actions">
-        <a
-          href="/rss.xml"
-          class="rss-link"
-          aria-label="RSS Feed"
-          title="Subscribe via RSS"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="rss-icon"
-            aria-hidden="true"
-          >
-            <path d="M4 11a9 9 0 0 1 9 9"></path>
-            <path d="M4 4a16 16 0 0 1 16 16"></path>
-            <circle cx="5" cy="19" r="1"></circle>
-          </svg>
-        </a>
+        <a href="/rss.xml" class="rss-link">↗ <span>RSS</span></a>
         <ThemeToggle />
       </div>
     </nav>
@@ -68,112 +29,26 @@ const { currentPath = Astro.url.pathname } = Astro.props;
 </header>
 
 <style>
-  .site-header {
-    border-bottom: 1px solid var(--color-border);
-    padding: var(--space-4) 0;
-  }
-
-  .header-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-4);
-  }
-
-  .site-title {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    color: var(--color-primary);
-    font-weight: var(--font-weight-bold);
-    font-size: var(--font-size-md);
-    text-decoration: none;
-    letter-spacing: -0.015em;
-  }
-
-  .site-title:hover {
-    color: var(--color-accent);
-    text-decoration: none;
-  }
-
-  .site-mark {
-    font-family: var(--font-mono);
-    color: var(--color-accent);
-    font-weight: var(--font-weight-bold);
-  }
-
-  .site-nav {
-    display: flex;
-    align-items: center;
-    gap: var(--space-4);
-  }
-
-  .nav-list {
-    display: flex;
-    list-style: none;
-    align-items: center;
-    gap: var(--space-4);
-  }
-
-  .nav-link {
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
-    text-decoration: none;
-    padding: var(--space-1) 0;
-    transition: color var(--transition-timing);
-  }
-
-  .nav-link:hover {
-    color: var(--color-primary);
-    text-decoration: none;
-  }
-
-  .nav-link.nav-link-active {
-    color: var(--color-accent);
-    font-weight: var(--font-weight-semibold);
-  }
-
-  .nav-actions {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding-left: var(--space-2);
-    border-left: 1px solid var(--color-border);
-  }
-
-  .rss-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.25rem;
-    height: 2.25rem;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--color-border);
-    background-color: var(--color-surface);
-    color: var(--color-text-secondary);
-    transition: background-color var(--transition-timing),
-      color var(--transition-timing), border-color var(--transition-timing);
-  }
-
-  .rss-link:hover {
-    background-color: var(--color-surface-hover);
-    color: var(--color-accent);
-    border-color: var(--color-border-hover);
-    text-decoration: none;
-  }
-
-  .rss-icon {
-    width: 1.125rem;
-    height: 1.125rem;
-  }
-
-  @media (max-width: 480px) {
-    .nav-list {
-      gap: var(--space-2);
-    }
-    .nav-actions {
-      padding-left: var(--space-1);
-    }
+  .site-header { padding: var(--space-4) 0; border-bottom: var(--border-paper); background: rgba(252, 249, 243, 0.88); }
+  .header-inner { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
+  .site-title { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--color-accent-terracotta); font-size: 1.15rem; text-decoration: none; white-space: nowrap; }
+  .site-title:hover { color: var(--color-accent-terracotta); }
+  .site-mark { display: grid; place-items: center; width: 1.65rem; height: 1.65rem; border: 1px dashed var(--color-accent-terracotta); font-size: 1.1rem; transform: rotate(-8deg); }
+  .site-nav, .nav-list, .nav-actions { display: flex; align-items: center; }
+  .site-nav { gap: var(--space-6); }
+  .nav-list { gap: 0.35rem; list-style: none; }
+  .nav-list a, .rss-link { padding: 0.4rem 0.7rem; color: var(--color-ink-secondary); font: 0.625rem/1 var(--font-mono); letter-spacing: 0.08em; text-decoration: none; text-transform: uppercase; background: var(--color-surface-container); }
+  .nav-list a:hover, .nav-list a.nav-link-active { color: var(--color-accent-terracotta); background: var(--color-surface-container-high); }
+  .nav-actions { gap: var(--space-2); }
+  .rss-link { border: 1px dashed var(--color-ink-muted); background: transparent; }
+  .rss-link:hover { color: var(--color-accent-terracotta); }
+  :global(.theme-toggle) { width: 2rem !important; height: 2rem !important; border: 1px solid var(--color-ink-secondary) !important; border-radius: 50% !important; background: transparent !important; }
+  @media (max-width: 760px) {
+    .site-header { padding: var(--space-3) 0; }
+    .header-inner { align-items: flex-start; flex-direction: column; }
+    .site-nav { width: 100%; justify-content: space-between; gap: var(--space-2); }
+    .nav-list { overflow-x: auto; }
+    .nav-list a { white-space: nowrap; }
+    .rss-link span { display: none; }
   }
 </style>

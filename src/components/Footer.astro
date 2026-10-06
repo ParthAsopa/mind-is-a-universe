@@ -1,73 +1,20 @@
 ---
-// src/components/Footer.astro
 import { siteTitle } from '../config';
-
 const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-info">
-      <span>&copy; {year} {siteTitle}.</span>
-      <span class="footer-separator">&bull;</span>
-      <span>Built with Astro.</span>
-    </div>
-
-    <div class="footer-links">
-      <a href="/rss.xml">RSS Feed</a>
-      <a href="/tags/">All Tags</a>
-      <a href="/about/">About</a>
-    </div>
+  <div>
+    <strong>{siteTitle}</strong>
+    <p>A physical-digital studio for quiet thoughts, pinned excerpts, archival ephemera, and independent musings.</p>
   </div>
+  <span class="footer-note"><a href="/notes/">NOTES ARCHIVE</a>　•　EST. STUDIO JOURNAL　•　ALL SCRAPS PRESERVED　•　{year}</span>
 </footer>
 
 <style>
-  .site-footer {
-    border-top: 1px solid var(--color-border);
-    padding: var(--space-6) 0 var(--space-10) 0;
-    font-size: var(--font-size-xs);
-    color: var(--color-text-muted);
-  }
-
-  .footer-inner {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: var(--space-4);
-  }
-
-  .footer-info {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-  }
-
-  .footer-separator {
-    opacity: 0.5;
-  }
-
-  .footer-links {
-    display: flex;
-    align-items: center;
-    gap: var(--space-4);
-  }
-
-  .footer-links a {
-    color: var(--color-text-secondary);
-    text-decoration: none;
-  }
-
-  .footer-links a:hover {
-    color: var(--color-accent);
-    text-decoration: underline;
-  }
-
-  @media (max-width: 480px) {
-    .footer-inner {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: var(--space-2);
-    }
-  }
+  .site-footer { display: flex; justify-content: space-between; gap: var(--space-8); padding: var(--space-10) 0; border-top: var(--border-paper); color: var(--color-ink-secondary); }
+  .site-footer strong { color: var(--color-accent-terracotta); font-size: 1.1rem; font-weight: 500; }
+  .site-footer p { max-width: 28rem; margin: var(--space-2) 0 0; font-size: 0.9rem; }
+  .footer-note { align-self: center; color: var(--color-ink-muted); font: 0.6rem/1.4 var(--font-mono); letter-spacing: 0.08em; }
+  @media (max-width: 640px) { .site-footer { flex-direction: column; padding: var(--space-8) 0; } .footer-note { align-self: start; } }
 </style>

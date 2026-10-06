@@ -1,0 +1,27 @@
+---
+interface Props {
+  tone?: 'neutral' | 'sage' | 'terracotta' | 'blue';
+  class?: string;
+}
+
+const { tone = 'neutral', class: className = '' } = Astro.props;
+---
+
+<span class:list={['paper-tape', `paper-tape-${tone}`, className]} aria-hidden="true"></span>
+
+<style>
+  .paper-tape {
+    position: absolute;
+    width: 80px;
+    height: 18px;
+    background: rgba(220, 210, 190, 0.65);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    backdrop-filter: blur(1px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .paper-tape-sage { background: rgba(201, 235, 205, 0.68); }
+  .paper-tape-terracotta { background: rgba(169, 74, 45, 0.2); }
+  .paper-tape-blue { background: rgba(204, 229, 255, 0.7); }
+</style>
