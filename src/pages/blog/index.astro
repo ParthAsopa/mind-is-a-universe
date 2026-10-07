@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArchiveLabel from '../../components/ArchiveLabel.astro';
+import PostCard from '../../components/PostCard.astro';
+import StudioSection from '../../components/StudioSection.astro';
+import { getPublishedPosts } from '../../utils/posts';
+
+const posts = await getPublishedPosts();
+---
+
+<BaseLayout title="Blog" description="Full-length essays and field notes from the Mind is a Universe studio.">
+  <div class="blog-board">
+    <header class="blog-header">
+      <div>
+        <ArchiveLabel>Studio archive / long form</ArchiveLabel>
+        <h1>Blog entries</h1>
+        <p>Full-length essays, experiments, and considered notes from the drafting table.</p>
+      </div>
+      <a class="feed-link" href="/rss/">Subscribe via RSS →</a>
+    </header>
+
+    <StudioSection eyebrow="▣ All essays · newest first" title="The long-form shelf" detail={`${posts.length} PUBLISHED POSTS`} />
+    {posts.length > 0 ? (
+      <div class="blog-grid">
+        {posts.map((post, index) => <PostCard post={post} featured={index === 0} index={index} />)}
+      </div>
+    ) : (
+      <p class="empty-blog">The blog shelf is empty. The first essay is still drying on the desk.</p>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  .blog-board { max-width: 1180px; margin: 0 auto; }
+  .blog-header { display: flex; justify-content: space-between; align-items: end; gap: var(--space-6); }
+  .blog-header h1 { margin: var(--space-4) 0 var(--space-2); color: var(--color-accent-terracotta); font-size: clamp(2.7rem, 6vw, 4.4rem); }
+  .blog-header p { max-width: 38rem; color: var(--color-ink-secondary); font-size: 1.15rem; }
+  .feed-link { padding: 0.65rem 0.8rem; color: #fff; background: var(--color-accent-terracotta); font: 0.65rem var(--font-mono); text-decoration: none; text-transform: uppercase; white-space: nowrap; }
+  .feed-link:hover { color: #fff; background: var(--color-ink-primary); }
+  .blog-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); align-items: start; }
+  .blog-grid :global(.post-card:first-child) { grid-column: span 2; }
+  .empty-blog { padding: var(--space-6); background: var(--color-surface-container); color: var(--color-ink-secondary); }
+  @media (max-width: 620px) { .blog-header { align-items: start; flex-direction: column; } .blog-grid { grid-template-columns: 1fr; } .blog-grid :global(.post-card:first-child) { grid-column: auto; } }
+</style>

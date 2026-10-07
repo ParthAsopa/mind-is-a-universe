@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArchiveLabel from '../../components/ArchiveLabel.astro';
+import { getPublishedPosts } from '../../utils/posts';
+import { formatDate } from '../../utils/formatDate';
+
+const posts = await getPublishedPosts();
+---
+
+<BaseLayout title="RSS" description="Subscribe to Mind is a Universe through RSS.">
+  <div class="rss-board">
+    <header class="rss-header">
+      <ArchiveLabel tone="sage">Reader's subscription desk</ArchiveLabel>
+      <h1>Follow the studio by RSS</h1>
+      <p>RSS lets you receive new essays in the reader you already use, without algorithms, tracking, or inbox noise.</p>
+      <a class="subscribe-button" href="/rss.xml">Open the RSS feed →</a>
+    </header>
+
+    <section class="feed-note">
+      <span class="rss-kicker">⌁ Feed address</span>
+      <code>{new URL('/rss.xml', Astro.site ?? Astro.url).toString()}</code>
+      <p>Copy this address into Feedly, NetNewsWire, Inoreader, or any other RSS reader.</p>
+    </section>
+
+    <section class="recent-feed">
+      <div class="section-heading"><span class="rss-kicker">▣ Recent transmissions</span><span>{posts.length} entries</span></div>
+      <ul>
+        {posts.map((post) => <li><time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time><a href={`/posts/${post.id}/`}>{post.data.title}</a></li>)}
+      </ul>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .rss-board { max-width: 860px; margin: 0 auto; }
+  .rss-header { padding: clamp(var(--space-6), 6vw, var(--space-12)); background: var(--color-surface-container-high); box-shadow: var(--shadow-paper); }
+  .rss-header h1 { margin: var(--space-5) 0 var(--space-3); color: var(--color-accent-terracotta); font-size: clamp(2.5rem, 6vw, 4.3rem); }
+  .rss-header p { max-width: 42rem; color: var(--color-ink-secondary); font-size: 1.15rem; }
+  .subscribe-button { display: inline-block; margin-top: var(--space-3); padding: 0.7rem 0.9rem; color: #fff; background: var(--color-accent-terracotta); font: 0.65rem var(--font-mono); text-decoration: none; text-transform: uppercase; }
+  .subscribe-button:hover { color: #fff; background: var(--color-ink-primary); }
+  .feed-note { display: grid; gap: var(--space-3); margin-top: var(--space-6); padding: var(--space-5); background: var(--color-surface-paper); box-shadow: var(--shadow-paper); transform: rotate(-0.5deg); }
+  .rss-kicker, .section-heading > span:last-child { color: var(--color-ink-muted); font: 0.65rem var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+  .feed-note code { width: fit-content; max-width: 100%; overflow-x: auto; color: var(--color-accent-terracotta); background: var(--color-surface-low); }
+  .feed-note p { margin: 0; color: var(--color-ink-secondary); }
+  .recent-feed { margin-top: var(--space-10); }
+  .section-heading { display: flex; justify-content: space-between; gap: var(--space-4); padding-bottom: var(--space-3); border-bottom: 1px solid var(--color-surface-dim); }
+  .recent-feed ul { list-style: none; }
+  .recent-feed li { display: grid; grid-template-columns: 150px 1fr; gap: var(--space-4); padding: var(--space-4) 0; border-bottom: 1px dashed var(--color-surface-dim); }
+  .recent-feed time { color: var(--color-ink-muted); font: 0.65rem var(--font-mono); text-transform: uppercase; }
+  .recent-feed a { color: var(--color-ink-primary); font-size: 1.15rem; text-decoration: none; }
+  .recent-feed a:hover { color: var(--color-accent-terracotta); }
+  @media (max-width: 560px) { .recent-feed li { grid-template-columns: 1fr; gap: var(--space-1); } }
+</style>

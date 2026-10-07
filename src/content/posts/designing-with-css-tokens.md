@@ -14,19 +14,11 @@ Centralizing design tokens in one file makes maintenance a breeze. Whether you w
 
 ```css
 :root {
-  --font-sans: system-ui, -apple-system, sans-serif;
-  --content-max-width: 65ch;
-  --color-bg: #fafaf9;
-  --color-text: #1c1917;
-  --color-accent: #2563eb;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --color-bg: #111215;
-    --color-text: #f3f4f6;
-    --color-accent: #60a5fa;
-  }
+  --font-serif: "Newsreader", Garamond, "Times New Roman", serif;
+  --content-max-width: 68ch;
+  --color-bg: #fcf9f3;
+  --color-ink-primary: #2b2621;
+  --color-accent-terracotta: #a94a2d;
 }
 ```
 

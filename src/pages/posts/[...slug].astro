@@ -24,13 +24,13 @@ const nextPost = posts[postIndex - 1];
 <BaseLayout title={post.data.title} description={post.data.description}>
   <div class="reader-layout">
     <aside class="reader-aside">
-      <div class="index-card"><PaperTape class="index-tape" /><span class="reader-kicker">Desk index no. {String(postIndex + 1).padStart(2, '0')}</span><h2>Folio outline</h2><p>Key milestones etched within this reflection piece.</p><nav><a href="#top">01. Genesis of restraint</a><a href="#content">02. The long read</a><a href="#colophon">03. The quiet web posture</a></nav><div class="progress-label"><span>Scroll velocity</span><span>100%</span></div><div class="progress"><span></span></div></div><div class="spec-card"><span>✣ Colophon spec</span><p>Typeset in Newsreader &amp; Courier Prime. Printed on simulated 120gsm laid ivory paper.</p></div>
+      <div class="index-card"><PaperTape class="index-tape" /><span class="reader-kicker">Desk index no. {String(postIndex + 1).padStart(2, '0')}</span><h2>Folio outline</h2><p>Key milestones etched within this reflection piece.</p><nav><a href="#top">01. Genesis of restraint</a><a href="#content">02. The long read</a><a href="#colophon">03. The quiet web posture</a></nav><div class="progress-label"><span>Reading progress</span><span id="reading-percent">0%</span></div><div class="progress" role="progressbar" aria-label="Reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="reading-progress-bar"></span></div></div>
     </aside>
     <article class="folio" id="top">
       <PaperTape class="folio-tape" tone="neutral" />
       <header class="folio-header"><div class="post-tags"><span class="tag-prefix">Filed under</span>{post.data.tags.map((tag) => <ArchiveLabel tone={tag === 'astro' ? 'sage' : 'terracotta'}>{tag}</ArchiveLabel>)}</div><h1>{post.data.title}</h1><p class="dek">{post.data.description}</p><div class="folio-meta"><span>◎ Julian Vance · Studio archivist</span><span>{formatDate(post.data.date)} · {readingTime}</span></div></header>
       <div class="prose" id="content"><Content /></div>
-      <footer class="folio-footer" id="colophon"><div class="reading-complete"><strong>✓ Reading completed</strong><span>Archived to your studio ledger for future reference.</span><a href="/">Back to studio</a></div><div class="folio-nav">{previousPost ? <a href={`/posts/${previousPost.id}/`}>← Previous entry<br /><strong>{previousPost.data.title}</strong></a> : <span></span>}{nextPost ? <a href={`/posts/${nextPost.id}/`}>Next entry →<br /><strong>{nextPost.data.title}</strong></a> : <span></span>}</div></footer>
+      <footer class="folio-footer" id="colophon"><div class="reading-complete"><strong id="reading-status">Reading in progress</strong><span id="reading-status-detail">Keep scrolling to reach the end of this folio.</span><a href="/">Back to studio</a></div><div class="folio-nav">{previousPost ? <a href={`/posts/${previousPost.id}/`}>← Previous entry<br /><strong>{previousPost.data.title}</strong></a> : <span></span>}{nextPost ? <a href={`/posts/${nextPost.id}/`}>Next entry →<br /><strong>{nextPost.data.title}</strong></a> : <span></span>}</div></footer>
     </article>
   </div>
 </BaseLayout>
@@ -38,13 +38,54 @@ const nextPost = posts[postIndex - 1];
 <style>
   .reader-layout { display: grid; grid-template-columns: 240px minmax(0, 760px); justify-content: center; gap: var(--space-8); align-items: start; }
   .reader-aside { position: sticky; top: var(--space-5); display: grid; gap: var(--space-5); }
-  .index-card, .spec-card { position: relative; padding: var(--space-5); background: var(--color-surface-low); box-shadow: var(--shadow-paper); }
-    .index-card, .spec-card { position: relative; isolation: isolate; padding: var(--space-5); background: var(--color-surface-low); box-shadow: var(--shadow-paper); }
+  .index-card { position: relative; isolation: isolate; padding: var(--space-5); background: var(--color-surface-low); box-shadow: var(--shadow-paper); }
     .index-card > :not(.paper-tape), .folio > :not(.paper-tape) { position: relative; z-index: 1; }
     .folio { position: relative; isolation: isolate; padding: var(--space-8) clamp(var(--space-5), 6vw, var(--space-12)); background: var(--color-surface-paper); box-shadow: var(--shadow-lifted); }
-  .index-card { transform: rotate(-1deg); } .index-tape { top: -0.5rem; left: 2rem; } .reader-kicker, .progress-label, .spec-card span { color: var(--color-accent-terracotta); font: 0.6rem var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; } .index-card h2 { margin: var(--space-4) 0 var(--space-2); font-size: 1.35rem; } .index-card p, .spec-card p { color: var(--color-ink-secondary); font-size: 0.85rem; } .index-card nav { display: grid; gap: var(--space-2); } .index-card nav a { color: var(--color-ink-primary); font: 0.65rem var(--font-mono); text-decoration: none; } .index-card nav a:hover { color: var(--color-accent-terracotta); } .progress-label { display: flex; justify-content: space-between; margin-top: var(--space-5); color: var(--color-ink-muted); font-size: 0.55rem; } .progress { height: 4px; margin-top: var(--space-2); background: var(--color-surface-container-high); } .progress span { display: block; width: 100%; height: 100%; background: var(--color-accent-terracotta); } .spec-card { transform: rotate(1deg); background: var(--color-surface-container); } .spec-card span { color: var(--color-accent-sage); }
+  .index-card { transform: rotate(-1deg); } .index-tape { top: -0.5rem; left: 2rem; } .reader-kicker, .progress-label { color: var(--color-accent-terracotta); font: 0.6rem var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; } .index-card h2 { margin: var(--space-4) 0 var(--space-2); font-size: 1.35rem; } .index-card p { color: var(--color-ink-secondary); font-size: 0.85rem; } .index-card nav { display: grid; gap: var(--space-2); } .index-card nav a { color: var(--color-ink-primary); font: 0.65rem var(--font-mono); text-decoration: none; } .index-card nav a:hover { color: var(--color-accent-terracotta); } .progress-label { display: flex; justify-content: space-between; margin-top: var(--space-5); color: var(--color-ink-muted); font-size: 0.55rem; } .progress { height: 4px; margin-top: var(--space-2); background: var(--color-surface-container-high); } .progress span { display: block; width: 0; height: 100%; background: var(--color-accent-terracotta); transition: width 120ms linear; }
   .folio { position: relative; padding: var(--space-8) clamp(var(--space-5), 6vw, var(--space-12)); background: var(--color-surface-paper); box-shadow: var(--shadow-lifted); } .folio-tape { top: -0.5rem; left: 35%; width: 140px; } .folio-header { padding-bottom: var(--space-8); border-bottom: 1px solid var(--color-surface-container); } .folio-header h1 { margin: var(--space-4) 0 var(--space-3); color: var(--color-accent-terracotta); font-size: clamp(2.3rem, 6vw, 4rem); line-height: 1.08; } .dek { color: var(--color-ink-secondary); font-size: 1.25rem; font-style: italic; } .folio-meta { display: flex; justify-content: space-between; gap: var(--space-3); margin-top: var(--space-5); color: var(--color-ink-muted); font: 0.65rem var(--font-mono); text-transform: uppercase; }
   .post-tags { display: flex; align-items: center; flex-wrap: wrap; gap: 0.45rem; } .tag-prefix { color: var(--color-ink-muted); font: 0.6rem var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; } .folio .prose { margin-top: var(--space-8); } .folio .prose :global(h2) { color: var(--color-accent-terracotta); } .folio .prose :global(p:first-child)::first-letter { float: left; margin: 0.05em 0.1em 0 0; color: var(--color-accent-terracotta); font-size: 4rem; line-height: 0.75; } .folio-footer { margin-top: var(--space-12); padding-top: var(--space-5); border-top: 1px dashed var(--color-surface-dim); } .reading-complete { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); padding: var(--space-4); background: var(--color-surface-container); font: 0.7rem var(--font-mono); } .reading-complete strong { color: var(--color-accent-sage); } .reading-complete span { color: var(--color-ink-secondary); } .reading-complete a { margin-left: auto; padding: 0.4rem 0.6rem; color: #fff; background: var(--color-accent-terracotta); text-decoration: none; } .folio-nav { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-top: var(--space-6); } .folio-nav a { padding: var(--space-4); color: var(--color-ink-secondary); background: var(--color-surface-low); font: 0.65rem var(--font-mono); text-decoration: none; } .folio-nav a:last-child { text-align: right; } .folio-nav strong { display: block; margin-top: var(--space-2); color: var(--color-ink-primary); font-family: var(--font-serif); font-size: 1rem; font-weight: 400; }
   @media (max-width: 820px) { .reader-layout { grid-template-columns: 1fr; } .reader-aside { position: static; grid-template-columns: 1fr 1fr; } }
   @media (max-width: 560px) { .reader-aside { grid-template-columns: 1fr; } .folio { padding: var(--space-6) var(--space-4); } .folio-meta { align-items: start; flex-direction: column; } .reading-complete a { margin-left: 0; } .folio-nav { grid-template-columns: 1fr; } .folio-nav a:last-child { text-align: left; } }
 </style>
+
+<script is:inline>
+  (() => {
+    const percentage = document.getElementById('reading-percent');
+    const progressBar = document.getElementById('reading-progress-bar');
+    const progress = progressBar?.parentElement;
+    const status = document.getElementById('reading-status');
+    const statusDetail = document.getElementById('reading-status-detail');
+
+    if (!percentage || !progressBar || !progress || !status || !statusDetail) return;
+
+    const updateProgress = () => {
+      const documentHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const readingProgress = documentHeight > 0
+        ? Math.min(100, Math.max(0, (window.scrollY / documentHeight) * 100))
+        : 100;
+      const roundedProgress = Math.round(readingProgress);
+
+      percentage.textContent = `${roundedProgress}%`;
+      progressBar.style.width = `${readingProgress}%`;
+      progress.setAttribute('aria-valuenow', String(roundedProgress));
+      const complete = roundedProgress >= 99;
+      status.textContent = complete ? '✓ Reading completed' : 'Reading in progress';
+      statusDetail.textContent = complete
+        ? 'Archived to your studio ledger for future reference.'
+        : 'Keep scrolling to reach the end of this folio.';
+    };
+
+    let frame = 0;
+    const onScroll = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        updateProgress();
+        frame = 0;
+      });
+    };
+
+    updateProgress();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', updateProgress);
+  })();
+</script>

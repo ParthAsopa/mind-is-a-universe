@@ -1,19 +1,48 @@
 # Mind is a Universe
 
-A clean, fast, and minimal personal site built with [Astro](https://astro.build) and plain CSS. It features full dark/light mode support, an RSS feed, automated sitemap, Shiki syntax highlighting, and zero client-side JavaScript (except for the theme toggle).
+A clean, fast, and minimal personal site built with [Astro](https://astro.build) and plain CSS. It features a paper-studio editorial interface, long-form posts, short sticky-note memos, an RSS feed, automated sitemap, and Shiki syntax highlighting.
 
 ---
 
 ## Features
 
-- **Zero JavaScript Runtime:** Shipped as lightweight static HTML & CSS with no client framework overhead.
+- **Minimal JavaScript Runtime:** Shipped as lightweight static HTML & CSS with no client framework overhead. Article pages use a small scroll-progress script.
 - **Design Tokens:** All colors, fonts, line-heights, and spacing are centralized in `src/styles/tokens.css` for effortless re-theming.
-- **Dark & Light Mode:** Automatically respects system preferences (`prefers-color-scheme`) and provides a manual toggle preserved in `localStorage`.
-- **Content Collections:** Strict frontmatter schema validation for Markdown posts.
+- **Content Collections:** Strict frontmatter schema validation for Markdown posts and short notes.
+- **Sticky Notes:** The home feed shows the latest note and links to the full `/notes/` memo archive.
+- **Blog Archive:** Full-length posts have their own archive at `/blog/`; the home page remains the studio feed.
+- **Tag Archives:** Every post tag links to a filtered archive of matching posts.
+- **RSS:** `/rss/` is the reader-facing subscription page; `/rss.xml` remains the machine-readable feed endpoint.
 - **Reading Time:** Automatic estimation based on word count.
+- **Reading Progress:** Article pages track scroll position in the sticky folio index.
 - **Syntax Highlighting:** Integrated code block formatting powered by Shiki.
 - **RSS & Sitemap:** Validated RSS 2.0 feed at `/rss.xml` and automated XML sitemap via `@astrojs/sitemap`.
 - **Optimal Typography:** Constrained reading measure (~65ch) for maximum legibility.
+
+## Feature Ledger
+
+### Currently Available
+
+- Full-length Markdown blog posts with dates, descriptions, tags, drafts, reading time, and syntax highlighting.
+- Short Markdown notes with a title, date, and text limited to 400 characters.
+- Latest-note sticky memo on the home feed.
+- Notes archive at `/notes/`.
+- Filtered tag archives at `/tags/<tag>/`.
+- Live reading-progress percentage on article pages.
+- RSS feed, sitemap, responsive layouts, and paper-studio design tokens.
+
+### Removed From The Interface
+
+- **Colophon spec card:** Removed from article pages. It was a decorative publication note describing the site typography and paper metaphor, rather than reader-facing article content.
+- **Dark-mode switcher:** Removed because the Paper & Ephemera system is intentionally a single light paper theme. The unused theme component and theme-flash script were removed as well.
+
+### Planned Features
+
+- Persisted “pin to folio” bookmarks for articles.
+- A real scroll-aware table of contents generated from Markdown headings.
+- Author/profile metadata in content configuration instead of template text.
+- Optional note categories or moods while preserving the short-form format.
+- Search across posts and notes.
 
 ---
 
@@ -76,6 +105,19 @@ console.log(greeting);
 | `tags`        | `string[]`                            | Array of tags for categorization                                                    |
 | `draft`       | `boolean` (optional, default `false`) | If `true`, the post only appears in dev mode and is excluded from production builds |
 
+## Adding a Note
+
+Short notes live in `src/content/notes/`. Keep them brief: the schema accepts a maximum of 400 characters.
+
+```markdown
+---
+title: "A small observation"
+date: 2026-10-06
+text: "One to four lines of thought, published without becoming a full essay."
+draft: false
+---
+```
+
 ---
 
 ## Re-theming the Site
@@ -83,9 +125,8 @@ console.log(greeting);
 All design tokens are isolated inside `src/styles/tokens.css`. To re-skin the website, modify the CSS custom properties in that file:
 
 - **Colors:** `--color-bg`, `--color-surface`, `--color-text`, `--color-accent`, etc.
-- **Dark Mode:** Edit the `@media (prefers-color-scheme: dark)` and `:root[data-theme='dark']` sections in `tokens.css`.
 - **Typography:** Change `--font-sans` or `--font-mono`.
-- **Max Width:** Adjust `--content-max-width` (default: `65ch`).
+- **Max Width:** Adjust `--content-max-width` (default: `68ch`).
 
 ---
 
