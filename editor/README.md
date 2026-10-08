@@ -1,0 +1,62 @@
+# Publishing desk
+
+This folder contains the private editor for the Astro site. It is intentionally
+separate from the public site's `src/` implementation. The editor writes the
+same Markdown content files that Astro already publishes:
+
+- blog posts → `src/content/posts/`
+- notes → `src/content/notes/`
+
+## Run locally
+
+From the repository root in PowerShell:
+
+```powershell
+$env:EDITOR_PASSWORD = "choose-a-long-private-password"
+npm run editor
+```
+
+Open `http://localhost:4322`. Run the public site separately with `npm run dev`
+to see published changes after saving. Set `EDITOR_PORT` to use another port.
+Keep the password in your shell environment or a local, ignored secret file;
+never add it, a GitHub token, or Cloudflare credentials to the repository.
+
+## Deploying the editor on Cloudflare Pages
+
+The local `server.mjs` is not a production server for Cloudflare Pages. Pages
+serves static files and does not keep a Node process or a writable copy of the
+Git repository. The `functions/` directory provides the production API instead:
+it reads and writes Markdown through the GitHub Contents API. A successful
+save creates a commit, and the existing Pages Git integration rebuilds the
+public site automatically.
+
+Create a second Cloudflare Pages project using `editor/` as its root directory:
+
+- build command: none
+- output directory: `public`
+- production URL: use a separate hostname such as `desk.example.com`
+
+Protect that hostname with Cloudflare Zero Trust Access. Use GitHub as the
+identity provider and create an Access application restricted to your email.
+Access then supplies the identity headers used by `functions/api/`.
+
+Add these Pages project environment variables/secrets:
+
+- `GITHUB_TOKEN`: a fine-grained GitHub token with **Contents: Read and write**
+  access to this repository only
+- `GITHUB_OWNER`: `ParthAsopa`
+- `GITHUB_REPO`: `mind-is-a-universe`
+- `GITHUB_BRANCH`: the branch Cloudflare Pages builds, usually `main`
+- `EDITOR_EMAIL`: your GitHub/Access email address
+
+Store `GITHUB_TOKEN` as an encrypted secret, not as a normal variable and never
+in the repository. The GitHub token is only used by Pages Functions; it is not
+sent to the browser.
+
+Keep Wrangler local secrets in `.dev.vars` (or `.dev.vars.*`), which are ignored
+by Git. Do not use a production GitHub token for local experiments unless it is
+limited to this repository and the minimum required Contents permission.
+
+The public site remains a separate Pages project. The editor can therefore be
+online at the same time as the public site, while publishing still follows the
+same Git-backed Markdown and build pipeline.

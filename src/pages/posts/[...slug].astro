@@ -19,16 +19,24 @@ const posts = await getPublishedPosts();
 const postIndex = posts.findIndex((item) => item.id === post.id);
 const previousPost = posts[postIndex + 1];
 const nextPost = posts[postIndex - 1];
+const outline = (post.data.outline ?? []).length > 0
+  ? post.data.outline ?? []
+  : [
+      { label: 'Genesis of restraint', anchor: 'top' },
+      { label: 'The long read', anchor: 'content' },
+      { label: 'The quiet web posture', anchor: 'colophon' },
+    ];
+const tags = post.data.tags ?? [];
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description}>
   <div class="reader-layout">
     <aside class="reader-aside">
-      <div class="index-card"><PaperTape class="index-tape" /><span class="reader-kicker">Desk index no. {String(postIndex + 1).padStart(2, '0')}</span><h2>Folio outline</h2><p>Key milestones etched within this reflection piece.</p><nav><a href="#top">01. Genesis of restraint</a><a href="#content">02. The long read</a><a href="#colophon">03. The quiet web posture</a></nav><div class="progress-label"><span>Reading progress</span><span id="reading-percent">0%</span></div><div class="progress" role="progressbar" aria-label="Reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="reading-progress-bar"></span></div></div>
+      <div class="index-card"><PaperTape class="index-tape" /><span class="reader-kicker">Desk index no. {String(postIndex + 1).padStart(2, '0')}</span><h2>Folio outline</h2><p>Key milestones etched within this reflection piece.</p><nav>{outline.map((item, index) => <a href={`#${item.anchor}`}>{String(index + 1).padStart(2, '0')}. {item.label}</a>)}</nav><div class="progress-label"><span>Reading progress</span><span id="reading-percent">0%</span></div><div class="progress" role="progressbar" aria-label="Reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="reading-progress-bar"></span></div></div>
     </aside>
     <article class="folio" id="top">
       <PaperTape class="folio-tape" tone="neutral" />
-      <header class="folio-header"><div class="post-tags"><span class="tag-prefix">Filed under</span>{post.data.tags.map((tag) => <ArchiveLabel tone={tag === 'astro' ? 'sage' : 'terracotta'}>{tag}</ArchiveLabel>)}</div><h1>{post.data.title}</h1><p class="dek">{post.data.description}</p><div class="folio-meta"><span>◎ Julian Vance · Studio archivist</span><span>{formatDate(post.data.date)} · {readingTime}</span></div></header>
+      <header class="folio-header"><div class="post-tags"><span class="tag-prefix">Filed under</span>{tags.map((tag) => <ArchiveLabel tone={tag === 'astro' ? 'sage' : 'terracotta'}>{tag}</ArchiveLabel>)}</div><h1>{post.data.title}</h1><p class="dek">{post.data.description}</p><div class="folio-meta"><span>◎ Julian Vance · Studio archivist</span><span>{formatDate(post.data.date)} · {readingTime}</span></div></header>
       <div class="prose" id="content"><Content /></div>
       <footer class="folio-footer" id="colophon"><div class="reading-complete"><strong id="reading-status">Reading in progress</strong><span id="reading-status-detail">Keep scrolling to reach the end of this folio.</span><a href="/">Back to studio</a></div><div class="folio-nav">{previousPost ? <a href={`/posts/${previousPost.id}/`}>← Previous entry<br /><strong>{previousPost.data.title}</strong></a> : <span></span>}{nextPost ? <a href={`/posts/${nextPost.id}/`}>Next entry →<br /><strong>{nextPost.data.title}</strong></a> : <span></span>}</div></footer>
     </article>

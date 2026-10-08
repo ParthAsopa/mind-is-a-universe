@@ -154,3 +154,13 @@ Subsequent commits to your repository will automatically trigger fresh builds.
 | `npm run dev`     | Starts local dev server at `http://localhost:3000` |
 | `npm run build`   | Builds production-ready static site to `./dist`    |
 | `npm run preview` | Previews the production build locally              |
+| `npm run editor`  | Starts the private publishing desk on port 4322   |
+
+## Publishing without editing code
+
+The private publishing desk lives in [`editor/`](./editor/README.md). It gives
+you a Word-style toolbar, a matching folio preview, flexible outline links,
+draft/publish controls, and editing for existing posts and notes. Saving a
+piece writes the Markdown file consumed by the existing Astro content
+collections, so the public site keeps its current rendering and deployment
+workflow.
