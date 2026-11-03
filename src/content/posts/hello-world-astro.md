@@ -1,8 +1,9 @@
 ---
 title: "Building Fast, Minimal Blogs with Astro"
-date: 2026-03-15
+date: "2026-03-15"
 description: "Why static site generation, content collections, and zero client-side JavaScript create the best reading experience on the web."
-tags: ["webdev", "astro", "minimalism"]
+tags: ["webdev","astro","minimalism"]
+outline: [{"label":"Genesis of restraint","anchor":"top"},{"label":"The long read","anchor":"content"},{"label":"The quiet web posture","anchor":"colophon"}]
 draft: false
 ---
 
@@ -16,7 +17,7 @@ Astro's architecture is uniquely suited for content-driven sites:
 
 - **Zero JavaScript by default:** Pages are compiled ahead of time into lean, static HTML and CSS. The browser doesn't execute a framework runtime to render words.
 - **Content Collections:** Markdown files are strictly validated with a typed schema, preventing broken links or missing metadata during builds.
-- **Markdown & Code Highlighting:** Native support for GitHub-flavored markdown and syntax highlighting through Shiki.
+- **Markdown &amp; Code Highlighting:** Native support for GitHub-flavored markdown and syntax highlighting through Shiki.
 
 Here is a quick look at an example script that powers reading-time calculation:
 
@@ -40,3 +41,7 @@ Instead of bringing a massive CSS framework into the mix, this site relies entir
 By restricting maximum content line width to roughly **65 characters**, reading remains effortless on desktop screens, tablets, and phones alike.
 
 Stay tuned for more notes on software architecture, design, and ideas worth exploring.
+
+
+
+this is  a harmless test to check if the code updates

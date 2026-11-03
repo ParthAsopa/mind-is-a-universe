@@ -8,16 +8,18 @@ function config(env) {
 }
 
 function headers(env) {
+  const token = config(env).GITHUB_TOKEN;
   return {
     Accept: 'application/vnd.github+json',
-    Authorization: `Bearer ${config(env).GITHUB_TOKEN}`,
+    Authorization: ['Bearer', token].join(' '),
     'X-GitHub-Api-Version': '2022-11-28',
   };
 }
 
 function repositoryUrl(env, filePath = '') {
   const { GITHUB_OWNER, GITHUB_REPO, GITHUB_BRANCH } = config(env);
-  return `${apiBase}/repos/${encodeURIComponent(GITHUB_OWNER)}/${encodeURIComponent(GITHUB_REPO)}/contents/${filePath}?ref=${encodeURIComponent(GITHUB_BRANCH)}`;
+  const encodedPath = filePath.split('/').map((part) => encodeURIComponent(part)).join('/');
+  return `${apiBase}/repos/${encodeURIComponent(GITHUB_OWNER)}/${encodeURIComponent(GITHUB_REPO)}/contents/${encodedPath}?ref=${encodeURIComponent(GITHUB_BRANCH)}`;
 }
 
 async function github(env, url, options = {}) {
@@ -30,6 +32,7 @@ async function github(env, url, options = {}) {
 export async function listContentFiles(env, type) {
   const directory = type === 'note' ? 'src/content/notes' : 'src/content/posts';
   const files = await github(env, repositoryUrl(env, directory));
+  if (!Array.isArray(files)) throw new Error(`GitHub returned an unexpected directory response for ${directory}.`);
   return files.filter((file) => file.type === 'file' && file.name.endsWith('.md'));
 }
 

@@ -71,6 +71,7 @@ export function itemFromSource(type, file, source, sha) {
     file: file.name,
     path: file.path,
     sha,
+    source,
     date: parsed.data.date || '',
     title: parsed.data.title || file.name,
     description: parsed.data.description || '',

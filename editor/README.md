@@ -36,22 +36,18 @@ Create a second Cloudflare Pages project using `editor/` as its root directory:
 - output directory: `public`
 - production URL: use a separate hostname such as `desk.example.com`
 
-Protect that hostname with Cloudflare Zero Trust Access. Use GitHub as the
-identity provider and create an Access application restricted to your email.
-Access then supplies the identity headers used by `functions/api/`.
-
 Add these Pages project environment variables/secrets:
 
+- `EDITOR_PASSWORD`: a long random password for the editor login
 - `GITHUB_TOKEN`: a fine-grained GitHub token with **Contents: Read and write**
   access to this repository only
 - `GITHUB_OWNER`: `ParthAsopa`
 - `GITHUB_REPO`: `mind-is-a-universe`
 - `GITHUB_BRANCH`: the branch Cloudflare Pages builds, usually `main`
-- `EDITOR_EMAIL`: your GitHub/Access email address
-
-Store `GITHUB_TOKEN` as an encrypted secret, not as a normal variable and never
-in the repository. The GitHub token is only used by Pages Functions; it is not
-sent to the browser.
+Store `EDITOR_PASSWORD` and `GITHUB_TOKEN` as encrypted secrets, not normal
+variables, and never commit them. Pages Functions issue a short-lived,
+HttpOnly, Secure session cookie after a successful password login. The GitHub
+token is only used by Pages Functions; it is never sent to the browser.
 
 Keep Wrangler local secrets in `.dev.vars` (or `.dev.vars.*`), which are ignored
 by Git. Do not use a production GitHub token for local experiments unless it is
@@ -59,4 +55,6 @@ limited to this repository and the minimum required Contents permission.
 
 The public site remains a separate Pages project. The editor can therefore be
 online at the same time as the public site, while publishing still follows the
-same Git-backed Markdown and build pipeline.
+same Git-backed Markdown and build pipeline. Keep the editor hostname private
+or add an optional Cloudflare Access policy if desired; Access is not required
+because the editor itself already requires the password.

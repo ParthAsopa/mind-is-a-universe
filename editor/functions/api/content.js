@@ -11,7 +11,7 @@ async function allItems(env, type) {
 }
 
 export async function onRequestGet({ request, env }) {
-  const denied = requireEditor(request, env);
+  const denied = await requireEditor(request, env);
   if (denied) return denied;
   try {
     const [posts, notes] = await Promise.all([allItems(env, 'post'), allItems(env, 'note')]);
@@ -22,7 +22,7 @@ export async function onRequestGet({ request, env }) {
 }
 
 export async function onRequestPost({ request, env }) {
-  const denied = requireEditor(request, env);
+  const denied = await requireEditor(request, env);
   if (denied) return denied;
   try {
     const item = await request.json();

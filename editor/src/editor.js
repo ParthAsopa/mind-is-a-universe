@@ -265,11 +265,12 @@ async function saveCurrent() {
 
 function collectItem(original) {
   const isPost = original.type === 'post';
-  const item = { ...original, title: document.querySelector('#title').value.trim(), slug: original.id || slugify(document.querySelector('#title').value), date: document.querySelector('#date').value, draft: document.querySelector('#draft').checked };
+  const { source: originalSource, ...itemWithoutSource } = original;
+  const item = { ...itemWithoutSource, title: document.querySelector('#title').value.trim(), slug: original.id || slugify(document.querySelector('#title').value), date: document.querySelector('#date').value, draft: document.querySelector('#draft').checked };
   if (isPost) {
     const source = editor.getMarkdown();
     item.body = !dirty && source === normalize(originalBody) ? originalBody : source;
-    if (!dirty && source === normalize(originalBody) && original.source) item.source = original.source;
+    if (!dirty && source === normalize(originalBody) && originalSource) item.source = originalSource;
     item.description = document.querySelector('#description').value.trim();
     item.tags = document.querySelector('#tags').value.split(',').map((tag) => tag.trim().toLowerCase()).filter(Boolean);
     item.outline = [...document.querySelectorAll('.outline-row')].map((row) => ({ label: row.querySelector('.outline-label').value.trim(), anchor: row.querySelector('.outline-anchor').value.trim() })).filter((entry) => entry.label && entry.anchor);
