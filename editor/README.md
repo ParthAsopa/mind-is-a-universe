@@ -43,7 +43,7 @@ Add these Pages project environment variables/secrets:
   access to this repository only
 - `GITHUB_OWNER`: `ParthAsopa`
 - `GITHUB_REPO`: `mind-is-a-universe`
-- `GITHUB_BRANCH`: the branch Cloudflare Pages builds, usually `main`
+- `GITHUB_BRANCH`: `master`, the production branch used by this repository
 Store `EDITOR_PASSWORD` and `GITHUB_TOKEN` as encrypted secrets, not normal
 variables, and never commit them. Pages Functions issue a short-lived,
 HttpOnly, Secure session cookie after a successful password login. The GitHub
