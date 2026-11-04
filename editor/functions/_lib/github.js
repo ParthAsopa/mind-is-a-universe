@@ -22,10 +22,43 @@ function repositoryUrl(env, filePath = '') {
   return `${apiBase}/repos/${encodeURIComponent(GITHUB_OWNER)}/${encodeURIComponent(GITHUB_REPO)}/contents/${encodedPath}?ref=${encodeURIComponent(GITHUB_BRANCH)}`;
 }
 
+function sanitizeDiagnostic(value) {
+  if (Array.isArray(value)) return value.map(sanitizeDiagnostic);
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.entries(value).map(([key, entry]) => {
+      if (/authorization|cookie|password|secret|token/i.test(key)) return [key, '[redacted]'];
+      return [key, sanitizeDiagnostic(entry)];
+    }));
+  }
+  if (typeof value === 'string') {
+    return value.replace(/(bearer\s+|authorization\s*[:=]\s*|cookie\s*[:=]\s*|token\s*[:=]\s*)\S+/gi, '$1[redacted]');
+  }
+  return value;
+}
+
 async function github(env, url, options = {}) {
   const response = await fetch(url, { ...options, headers: { ...headers(env), ...(options.headers || {}) } });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(data.message || `GitHub request failed (${response.status}).`);
+  const responseText = await response.text();
+  let data = {};
+  try {
+    data = responseText ? JSON.parse(responseText) : {};
+  } catch {
+    data = { body: responseText };
+  }
+  if (!response.ok) {
+    const diagnostic = sanitizeDiagnostic(data);
+    console.error('GitHub API request failed', {
+      status: response.status,
+      statusText: response.statusText,
+      body: diagnostic,
+    });
+    const message = typeof data.message === 'string'
+      ? data.message
+      : typeof data.body === 'string' && data.body
+        ? data.body
+        : `GitHub request failed (${response.status}).`;
+    throw new Error(`GitHub request failed (${response.status}): ${message}`);
+  }
   return data;
 }
 
