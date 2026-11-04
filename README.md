@@ -1,166 +1,128 @@
 # Mind is a Universe
 
-A clean, fast, and minimal personal site built with [Astro](https://astro.build) and plain CSS. It features a paper-studio editorial interface, long-form posts, short sticky-note memos, an RSS feed, automated sitemap, and Shiki syntax highlighting.
-
----
+Mind is a Universe is a personal editorial website built with Astro. It publishes
+long-form Markdown posts and short notes as a fast, mostly static site. A separate
+private publishing desk lets an authenticated editor update those same Markdown
+files without changing the public site's rendering code.
 
 ## Features
 
-- **Minimal JavaScript Runtime:** Shipped as lightweight static HTML & CSS with no client framework overhead. Article pages use a small scroll-progress script.
-- **Design Tokens:** All colors, fonts, line-heights, and spacing are centralized in `src/styles/tokens.css` for effortless re-theming.
-- **Content Collections:** Strict frontmatter schema validation for Markdown posts and short notes.
-- **Sticky Notes:** The home feed shows the latest note and links to the full `/notes/` memo archive.
-- **Blog Archive:** Full-length posts have their own archive at `/blog/`; the home page remains the studio feed.
-- **Tag Archives:** Every post tag links to a filtered archive of matching posts.
-- **RSS:** `/rss/` is the reader-facing subscription page; `/rss.xml` remains the machine-readable feed endpoint.
-- **Reading Time:** Automatic estimation based on word count.
-- **Reading Progress:** Article pages track scroll position in the sticky folio index.
-- **Syntax Highlighting:** Integrated code block formatting powered by Shiki.
-- **RSS & Sitemap:** Validated RSS 2.0 feed at `/rss.xml` and automated XML sitemap via `@astrojs/sitemap`.
-- **Optimal Typography:** Constrained reading measure (~65ch) for maximum legibility.
+- Static Astro pages with content collections and strict frontmatter validation.
+- Blog posts, short notes, tag archives, RSS, sitemap, syntax highlighting, and
+  reading-time/progress UI.
+- Paper-studio visual system implemented with CSS tokens and components.
+- Private editor with rich-text, Markdown, split-preview, outline, draft, and
+  publish controls.
+- Git-backed publishing: production editor saves create GitHub commits; the
+  public Cloudflare Pages project then rebuilds from the changed repository.
 
-## Feature Ledger
+## Screenshots
 
-### Currently Available
+Screenshots are not currently maintained in the documentation. Add current
+public-site and editor screenshots here when they are available.
 
-- Full-length Markdown blog posts with dates, descriptions, tags, drafts, reading time, and syntax highlighting.
-- Short Markdown notes with a title, date, and text limited to 400 characters.
-- Latest-note sticky memo on the home feed.
-- Notes archive at `/notes/`.
-- Filtered tag archives at `/tags/<tag>/`.
-- Live reading-progress percentage on article pages.
-- RSS feed, sitemap, responsive layouts, and paper-studio design tokens.
+## Tech stack
 
-### Removed From The Interface
+- Node.js 22 or newer
+- Astro 7, TypeScript configuration, and Markdown content collections
+- Plain CSS and Astro components for the public UI
+- Tiptap, CodeMirror, Lowlight, and esbuild for the editor
+- Cloudflare Pages for hosting; Pages Functions for the production editor API
+- GitHub REST Contents API for production content storage
 
-- **Colophon spec card:** Removed from article pages. It was a decorative publication note describing the site typography and paper metaphor, rather than reader-facing article content.
-- **Dark-mode switcher:** Removed because the Paper & Ephemera system is intentionally a single light paper theme. The unused theme component and theme-flash script were removed as well.
+## Architecture at a glance
 
-### Planned Features
-
-- Persisted “pin to folio” bookmarks for articles.
-- A real scroll-aware table of contents generated from Markdown headings.
-- Author/profile metadata in content configuration instead of template text.
-- Optional note categories or moods while preserving the short-form format.
-- Search across posts and notes.
-
----
-
-## Getting Started
-
-### Prerequisites
-
-Ensure you have [Node.js](https://nodejs.org) v22 or higher installed.
-
-### 1. Install Dependencies
-
-```bash
-npm install
+```mermaid
+flowchart LR
+  Author[Author] --> Desk[Private editor Pages project]
+  Desk --> Functions[Pages Functions]
+  Functions -->|authenticated REST calls| GitHub[GitHub repository]
+  GitHub -->|commit triggers build| PublicBuild[Public Pages build]
+  PublicBuild --> Astro[Astro static generation]
+  Astro --> Site[Public website]
+  GitHub -->|local checkout| Local[Local editor / Astro development]
 ```
 
-### 2. Run the Development Server
+The public project reads `src/content/posts/` and `src/content/notes/` at build
+time. The editor project serves `editor/public/` and its Functions. The two
+projects can use the same repository while having different roots, outputs, and
+runtime responsibilities.
 
-```bash
+## Repository structure
+
+```text
+src/
+  content/posts/       Long-form Markdown posts
+  content/notes/       Short Markdown notes
+  content.config.ts    Collection loaders and schemas
+  pages/               Astro routes and RSS/robots endpoints
+  components/          Reusable public-site components
+  layouts/             Shared page layout
+  styles/              Design tokens and global CSS
+  utils/               Sorting, dates, slugs, and reading time
+editor/
+  public/              Static editor shell and bundled browser JavaScript
+  src/editor.js        Editor source entry point
+  functions/           Cloudflare Pages Functions and GitHub integration
+  server.mjs           Local filesystem-backed editor server
+```
+
+## Local setup
+
+Prerequisite: install Git and Node.js 22+. From PowerShell:
+
+```powershell
+git clone https://github.com/ParthAsopa/mind-is-a-universe.git
+Set-Location .\mind-is-a-universe
+npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) (or the URL shown in your terminal) to view the site.
+Open the URL printed by Astro, normally `http://localhost:4321/` for Astro 7.
+The editor uses a separate local Node server:
 
----
-
-## Adding a New Post
-
-All blog posts are Markdown (`.md`) files located in `src/content/posts/`.
-
-Create a new file, for example `src/content/posts/my-new-post.md`:
-
-```markdown
----
-title: "My Journey into Minimalist Web Design"
-date: 2026-04-01
-description: "Reflections on simplifying tools, interfaces, and codebases."
-tags: ["design", "minimalism", "webdev"]
-draft: false
----
-
-Write your Markdown post content here.
-
-## Subheading
-
-You can write standard Markdown, including lists, blockquotes, and code blocks with syntax highlighting:
-
-\`\`\`typescript
-const greeting = "Hello, world!";
-console.log(greeting);
-\`\`\`
+```powershell
+$env:EDITOR_PASSWORD = "choose-a-long-local-password"
+npm run editor
 ```
 
-### Frontmatter Schema
+Open `http://localhost:4322/`. Run the public site separately to see local
+Markdown changes. `EDITOR_PORT` can select another editor port.
 
-| Field         | Type                                  | Description                                                                         |
-| ------------- | ------------------------------------- | ----------------------------------------------------------------------------------- |
-| `title`       | `string`                              | Post headline                                                                       |
-| `date`        | `Date` (YYYY-MM-DD)                   | Publication date                                                                    |
-| `description` | `string`                              | Brief summary shown in cards and meta tags                                          |
-| `tags`        | `string[]`                            | Array of tags for categorization                                                    |
-| `draft`       | `boolean` (optional, default `false`) | If `true`, the post only appears in dev mode and is excluded from production builds |
+## Commands
 
-## Adding a Note
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start the Astro development server. |
+| `npm run build` | Generate the production site in `dist/`. |
+| `npm run preview` | Preview the built `dist/` site locally. |
+| `npm run editor` | Start the local filesystem-backed editor. |
+| `npm run editor:build` | Bundle `editor/src/editor.js` to `editor/public/editor.js`. |
 
-Short notes live in `src/content/notes/`. Keep them brief: the schema accepts a maximum of 400 characters.
+For editor operation, deployment, API details, and troubleshooting, see
+[`editor/README.md`](./editor/README.md) and the detailed guides:
 
-```markdown
----
-title: "A small observation"
-date: 2026-10-06
-text: "One to four lines of thought, published without becoming a full essay."
-draft: false
----
-```
+- [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md)
+- [`docs/DEVELOPMENT.md`](./docs/DEVELOPMENT.md)
+- [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md)
+- [`docs/PUBLISHING-WORKFLOW.md`](./docs/PUBLISHING-WORKFLOW.md)
+- [`docs/TROUBLESHOOTING.md`](./docs/TROUBLESHOOTING.md)
 
----
+## Deployment overview
 
-## Re-theming the Site
+The public Cloudflare Pages project is expected to build from the repository root
+with `npm run build` and publish `dist`. The editor is a second Pages project
+using `editor/` as its root, publishing `public`, and discovering
+`editor/functions/`. These intended settings are documented in
+[`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md); the Cloudflare dashboard itself is
+not part of this repository, so production branch, domains, and project settings
+must be verified there.
 
-All design tokens are isolated inside `src/styles/tokens.css`. To re-skin the website, modify the CSS custom properties in that file:
+## Security notes
 
-- **Colors:** `--color-bg`, `--color-surface`, `--color-text`, `--color-accent`, etc.
-- **Typography:** Change `--font-sans` or `--font-mono`.
-- **Max Width:** Adjust `--content-max-width` (default: `68ch`).
-
----
-
-## Deploying to Cloudflare Pages
-
-This site is statically pre-rendered and ready for deployment to Cloudflare Pages:
-
-1. Push your repository to GitHub or GitLab.
-2. In the [Cloudflare Dashboard](https://dash.cloudflare.com/), navigate to **Workers & Pages** > **Create application** > **Pages** > **Connect to Git**.
-3. Select your repository.
-4. In the build settings, configure:
-   - **Framework preset:** `Astro` (or `None`)
-   - **Build command:** `npm run build`
-   - **Output directory:** `dist`
-5. Click **Save and Deploy**.
-
-Subsequent commits to your repository will automatically trigger fresh builds.
-
----
-
-## Build Commands
-
-| Command           | Action                                             |
-| ----------------- | -------------------------------------------------- |
-| `npm run dev`     | Starts local dev server at `http://localhost:3000` |
-| `npm run build`   | Builds production-ready static site to `./dist`    |
-| `npm run preview` | Previews the production build locally              |
-| `npm run editor`  | Starts the private publishing desk on port 4322   |
-
-## Publishing without editing code
-
-The private publishing desk lives in [`editor/`](./editor/README.md). It gives
-you a Word-style toolbar, a matching folio preview, flexible outline links,
-draft/publish controls, and editing for existing posts and notes. Saving a
-piece writes the Markdown file consumed by the existing Astro content
-collections, so the public site keeps its current rendering and deployment
-workflow.
+Never commit `EDITOR_PASSWORD`, GitHub tokens, cookies, or local secret files.
+The production editor keeps its token in Pages environment variables and does
+not send it to the browser. Use a fine-grained token limited to this repository
+with Contents read/write and Metadata read-only. Add Cloudflare Access in front
+of the editor hostname as an additional defense layer, and review password
+rotation, rate limiting, and deployment logs periodically.
